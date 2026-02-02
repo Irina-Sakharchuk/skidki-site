@@ -100,36 +100,33 @@
           card.className = "card";
 
           card.innerHTML = `
-            ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+  ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%; border-radius:8px; margin-bottom:12px;">` : ""}
 
-            <h2 style="margin-top: 0;">${item.title}</h2>
+  <h2 style="margin-top: 0;">${item.title}</h2>
 
-            <p style="margin: 0 0 10px 0;">
-              <strong>${item.brand}</strong><br>
-              ${item.description}
-            </p>
+  <p style="margin: 0 0 10px 0;">
+    ${item.description}
+  </p>
 
-            ${item.promokod ? `
-              <div style="background: #fff7ed; padding: 10px; border-left: 4px solid #fb923c; border-radius: 6px; margin: 10px 0;">
-                <p style="margin: 0 0 8px 0;">
-                  <strong>Промокод:</strong>
-                  <span style="font-family: monospace;" id="code-${item.id}">${item.promokod}</span>
-                </p>
+  ${item.promokod ? `
+    <div style="background: #fff7ed; padding: 10px; border-left: 4px solid #fb923c; border-radius: 6px; margin: 10px 0;">
+      <p style="margin: 0 0 8px 0;">
+        <strong>Промокод:</strong>
+        <span style="font-family: monospace;" id="code-${item.id}">${item.promokod}</span>
+      </p>
 
-                <button id="btn-${item.id}"
-                  onclick="copyAndGo('${item.id}', '${item.link}')"
-                  class="copy-btn">
-                  Скопировать и перейти на сайт
-                </button>
-              </div>
-            ` : ""}
+      <button id="btn-${item.id}"
+        onclick="copyAndGo('${item.id}', '${item.link}')"
+        class="copy-btn">
+        Скопировать и перейти на сайт
+      </button>
+    </div>
+  ` : ""}
 
-            <a href="${item.link}" target="_blank" style="color: #2563eb;">Перейти к акции</a>
-
-            <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
-              Категория: ${item.category}
-            </p>
-          `;
+  <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
+    Категория: ${item.category}
+  </p>
+`;
 
           container.appendChild(card);
         });
