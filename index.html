@@ -21,12 +21,28 @@
       background: #f7f7f9;
       color: #111827;
     }
+
+    /* Контейнер карточек */
+    #promo-container {
+      display: grid;
+      gap: 20px;
+    }
+
+    /* Карточка */
     .card {
       background: white;
       border: 1px solid #e5e7eb;
       padding: 15px;
       border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
     .copy-btn {
       padding: 10px 14px;
       font-size: 0.95em;
@@ -36,6 +52,10 @@
       border-radius: 6px;
       cursor: pointer;
       transition: 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: #f97316;
     }
   </style>
 </head>
@@ -60,7 +80,7 @@
   <!-- Контейнер -->
   <main style="padding: 20px;">
     <input type="text" id="search" placeholder="Поиск акции..." style="width: 100%; padding: 10px; margin-bottom: 20px; font-size: 1em;">
-    <div id="promo-container" style="display: grid; gap: 20px;"></div>
+    <div id="promo-container"></div>
   </main>
 
   <!-- JavaScript -->
@@ -80,8 +100,14 @@
           card.className = "card";
 
           card.innerHTML = `
+            ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+
             <h2 style="margin-top: 0;">${item.title}</h2>
-            <p><strong>${item.brand}</strong> — ${item.description}</p>
+
+            <p style="margin: 0 0 10px 0;">
+              <strong>${item.brand}</strong><br>
+              ${item.description}
+            </p>
 
             ${item.promokod ? `
               <div style="background: #fff7ed; padding: 10px; border-left: 4px solid #fb923c; border-radius: 6px; margin: 10px 0;">
@@ -98,10 +124,11 @@
               </div>
             ` : ""}
 
-            ${item.image ? `<img src="${item.image}" alt="${item.brand}" style="max-width: 100%; border-radius: 6px; margin: 10px 0;">` : ""}
-
             <a href="${item.link}" target="_blank" style="color: #2563eb;">Перейти к акции</a>
-            <p style="color: #6b7280; font-size: 0.9em;">Категория: ${item.category}</p>
+
+            <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
+              Категория: ${item.category}
+            </p>
           `;
 
           container.appendChild(card);
@@ -121,7 +148,6 @@
       });
     }
 
-    // Кнопка: копировать + анимация + переход
     function copyAndGo(id, url) {
       const code = document.getElementById(`code-${id}`).textContent;
       const btn = document.getElementById(`btn-${id}`);
