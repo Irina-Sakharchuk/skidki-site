@@ -9,21 +9,8 @@
   <title>Скидки на пике — актуальные акции и промокоды</title>
 
   <!-- SEO -->
-  <meta name="description" content="SkidkiNaPike — актуальные скидки и промокоды с маркетплейсов. Гаджеты, одежда, косметика, продукты и аксессуары в выгодных подборках. Экономьте на онлайн-покупках и не пропускайте лучшие акции.">
+  <meta name="description" content="SkidkiNaPike — актуальные скидки и промокоды с маркетплейсов. Гаджеты, одежда, косметика, продукты и аксессуары в выгодных подборках.">
   <meta name="robots" content="index, follow">
-
-  <!-- Open Graph (для соцсетей) -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Скидки на пике — SkidkiNaPike">
-  <meta property="og:description" content="Ваш гид по актуальным скидкам на маркетплейсах: гаджеты, одежда, косметика, продукты и многое другое.">
-  <meta property="og:url" content="https://ТВОЙ-ЛОГИН.github.io/skidki-site/">
-  <meta property="og:image" content="https://ТВОЙ-ДОМЕН/путь-к-картинке.jpg">
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Скидки на пике — SkidkiNaPike">
-  <meta name="twitter:description" content="Лучшие скидки и промокоды с маркетплейсов в одном месте.">
-  <meta name="twitter:image" content="https://ТВОЙ-ДОМЕН/путь-к-картинке.jpg">
 
   <!-- Стили -->
   <style>
@@ -33,6 +20,22 @@
       padding: 0;
       background: #f7f7f9;
       color: #111827;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .copy-btn {
+      padding: 10px 14px;
+      font-size: 0.95em;
+      background: #fb923c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
     }
   </style>
 </head>
@@ -54,13 +57,13 @@
     </p>
   </header>
 
-  <!-- 🔥 Контейнер для поиска и карточек -->
+  <!-- Контейнер -->
   <main style="padding: 20px;">
     <input type="text" id="search" placeholder="Поиск акции..." style="width: 100%; padding: 10px; margin-bottom: 20px; font-size: 1em;">
     <div id="promo-container" style="display: grid; gap: 20px;"></div>
   </main>
 
-  <!-- 🔥 JavaScript — строго перед </body> -->
+  <!-- JavaScript -->
   <script>
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbxxIFgjwYXTo4AAbd39UyT_Wjx4IAC0Sb0c4WomFASAs74QfqT2Zjfp086VKSVe60E/exec";
 
@@ -74,14 +77,33 @@
         container.innerHTML = "";
         items.forEach(item => {
           const card = document.createElement("div");
-          card.style = "background: white; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px;";
+          card.className = "card";
+
           card.innerHTML = `
             <h2 style="margin-top: 0;">${item.title}</h2>
             <p><strong>${item.brand}</strong> — ${item.description}</p>
+
+            ${item.promokod ? `
+              <div style="background: #fff7ed; padding: 10px; border-left: 4px solid #fb923c; border-radius: 6px; margin: 10px 0;">
+                <p style="margin: 0 0 8px 0;">
+                  <strong>Промокод:</strong>
+                  <span style="font-family: monospace;" id="code-${item.id}">${item.promokod}</span>
+                </p>
+
+                <button id="btn-${item.id}"
+                  onclick="copyAndGo('${item.id}', '${item.link}')"
+                  class="copy-btn">
+                  Скопировать и перейти на сайт
+                </button>
+              </div>
+            ` : ""}
+
             ${item.image ? `<img src="${item.image}" alt="${item.brand}" style="max-width: 100%; border-radius: 6px; margin: 10px 0;">` : ""}
+
             <a href="${item.link}" target="_blank" style="color: #2563eb;">Перейти к акции</a>
             <p style="color: #6b7280; font-size: 0.9em;">Категория: ${item.category}</p>
           `;
+
           container.appendChild(card);
         });
       }
@@ -96,6 +118,26 @@
           item.category.toLowerCase().includes(query)
         );
         render(filtered);
+      });
+    }
+
+    // Кнопка: копировать + анимация + переход
+    function copyAndGo(id, url) {
+      const code = document.getElementById(`code-${id}`).textContent;
+      const btn = document.getElementById(`btn-${id}`);
+
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.textContent;
+
+        btn.textContent = "✓ Скопировано";
+        btn.style.background = "#16a34a";
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = "#fb923c";
+        }, 1000);
+
+        window.open(url, "_blank");
       });
     }
 
