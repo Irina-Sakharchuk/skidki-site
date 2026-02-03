@@ -59,6 +59,47 @@
     }
   </style>
 </head>
+<script>
+function updateCategoryCounts() {
+  const offers = document.querySelectorAll('.offer');
+  const categories = {};
+
+  offers.forEach(offer => {
+    const cat = offer.dataset.category;
+    categories[cat] = (categories[cat] || 0) + 1;
+  });
+
+  const listItems = document.querySelectorAll('#categoryList li');
+
+  listItems.forEach(li => {
+    const link = li.querySelector('a');
+    const text = link.childNodes[0].nodeValue.trim();
+    const category = text;
+
+    const countSpan = li.querySelector('.count');
+
+    if (category === 'Все бренды') {
+      countSpan.textContent = `(${offers.length})`;
+    } else {
+      countSpan.textContent = categories[category] ? `(${categories[category]})` : '(0)';
+    }
+  });
+}
+
+function filterOffers(category) {
+  const offers = document.querySelectorAll('.offer');
+
+  offers.forEach(offer => {
+    if (category === 'all' || offer.dataset.category === category) {
+      offer.style.display = 'block';
+    } else {
+      offer.style.display = 'none';
+    }
+  });
+}
+
+updateCategoryCounts();
+</script>
 
 <body>
 <header style="background: #ffffff; padding: 25px 20px; border-bottom: 1px solid #e5e7eb;">
@@ -82,31 +123,47 @@
     <input type="text" id="search" placeholder="Поиск акции..."
            style="padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 6px; min-width: 220px; max-width: 100%;">
   </div>
-  <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+ <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
 
-  <!-- СЛЕВА: КАТЕГОРИИ -->
+  <!-- СЛЕВА: ВЕРТИКАЛЬНОЕ МЕНЮ КАТЕГОРИЙ -->
   <aside style="flex: 1 1 200px; min-width: 200px;">
     <h3 style="margin-bottom: 15px;">Категории</h3>
-    <ul id="categoryList" style="list-style: none; padding: 0; margin: 0;">
-      <li><a href="#" onclick="filterOffers('all')">Все бренды <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Онлайн-сервисы')">Онлайн-сервисы <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Финансовые продукты')">Финансовые продукты <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Еда и напитки')">Еда и напитки <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Маркетплейсы')">Маркетплейсы <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Красота и здоровье')">Красота и здоровье <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Мода')">Мода <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Путешествия')">Путешествия <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Образование')">Образование <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Спорт')">Спорт <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Дом и ремонт')">Дом и ремонт <span class="count"></span></a></li>
-    </ul>
+    <nav>
+      <ul id="categoryList" style="list-style: none; padding: 0; margin: 0;">
+        <li><a href="#" onclick="filterOffers('all')">Все бренды <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Онлайн-сервисы')">Онлайн-сервисы <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Финансовые продукты')">Финансовые продукты <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Еда и напитки')">Еда и напитки <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Маркетплейсы')">Маркетплейсы <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Красота и здоровье')">Красота и здоровье <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Мода')">Мода <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Путешествия')">Путешествия <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Образование')">Образование <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Спорт')">Спорт <span class="count"></span></a></li>
+        <li><a href="#" onclick="filterOffers('Дом и ремонт')">Дом и ремонт <span class="count"></span></a></li>
+      </ul>
+    </nav>
   </aside>
 
   <!-- СПРАВА: ПРЕДЛОЖЕНИЯ -->
   <section style="flex: 3 1 600px; min-width: 300px;">
     <h3 style="margin-bottom: 15px;">Предложения</h3>
     <div id="offers" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-      <!-- Твои карточки будут здесь -->
+      
+      <!-- Карточка Kari -->
+      <div class="offer" data-category="Мода" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
+        <h4>Kari — скидка 8%</h4>
+        <p>Промокод: gtb1369422</p>
+        <a href="https://getblogger.ru/click/..." target="_blank">Перейти к акции</a>
+      </div>
+
+      <!-- Карточка Подружка -->
+      <div class="offer" data-category="Красота и здоровье" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
+        <h4>Подружка — скидка 10%</h4>
+        <p>Промокод: gtb1369423</p>
+        <a href="https://getblogger.ru/click/..." target="_blank">Перейти к акции</a>
+      </div>
+
     </div>
   </section>
 
