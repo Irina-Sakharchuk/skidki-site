@@ -329,5 +329,25 @@ document.querySelectorAll('.category-btn').forEach(button => {
   });
 });
 </script>
+  <script>
+document.querySelectorAll('.category-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const selected = button.dataset.category;
+
+    // подсветка активной кнопки
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+
+    // фильтрация проектов
+    document.querySelectorAll('.project').forEach(block => {
+      if (selected === 'all' || block.dataset.category === selected) {
+        block.style.display = 'block';
+      } else {
+        block.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
