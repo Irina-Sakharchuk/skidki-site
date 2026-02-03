@@ -207,7 +207,8 @@ document.querySelectorAll('.category-btn').forEach(button => {
         container.innerHTML = "";
         items.forEach(item => {
           const card = document.createElement("div");
-          card.className = "card";
+card.className = "card offer";          // теперь это .offer
+card.dataset.category = item.category;  // теперь есть data-category
 
          card.innerHTML = `
   ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
