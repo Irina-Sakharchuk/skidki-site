@@ -108,60 +108,27 @@
 </style>
 </head>
 <script>
-function updateCategoryCounts() {
-  const offers = document.querySelectorAll('.offer');
-  const categories = {};
+document.addEventListener('DOMContentLoaded', function () {
+  const buttons = document.querySelectorAll('.category-btn');
 
-  offers.forEach(offer => {
-    const cat = offer.dataset.category;
-    categories[cat] = (categories[cat] || 0) + 1;
-  });
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const selected = button.dataset.category;
 
-  const listItems = document.querySelectorAll('#categoryList li');
+      // подсветка активной кнопки
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
 
-  listItems.forEach(li => {
-    const link = li.querySelector('a');
-    const text = link.childNodes[0].nodeValue.trim();
-    const category = text;
+      // находим все элементы с data-category, КРОМЕ кнопок
+      const items = document.querySelectorAll('[data-category]:not(.category-btn)');
 
-    const countSpan = li.querySelector('.count');
-
-    if (category === 'Все бренды') {
-      countSpan.textContent = `(${offers.length})`;
-    } else {
-      countSpan.textContent = categories[category] ? `(${categories[category]})` : '(0)';
-    }
-  });
-}
-
-function filterOffers(category) {
-  const offers = document.querySelectorAll('.offer');
-
-  offers.forEach(offer => {
-    if (category === 'all' || offer.dataset.category === category) {
-      offer.style.display = 'block';
-    } else {
-      offer.style.display = 'none';
-    }
-  });
-}
-
-updateCategoryCounts();
-</script>
-  <script>
-document.querySelectorAll('.category-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const selected = button.dataset.category;
-
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    document.querySelectorAll('.offer').forEach(card => {
-      if (selected === 'Все бренды' || card.dataset.category === selected) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
+      items.forEach(item => {
+        if (selected === 'all' || item.dataset.category === selected) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     });
   });
 });
