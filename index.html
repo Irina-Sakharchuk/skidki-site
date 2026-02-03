@@ -308,46 +308,6 @@ document.querySelectorAll('.category-btn').forEach(button => {
     }
 
     loadPromos();
-  </script>
-<script>
-document.querySelectorAll('.category-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const selected = button.dataset.category;
-
-    // Подсветка активной кнопки
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    // Фильтрация карточек
-    document.querySelectorAll('.offer').forEach(card => {
-      if (selected === 'all' || card.dataset.category === selected) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-});
-</script>
-  <script>
-document.querySelectorAll('.category-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const selected = button.dataset.category;
-
-    // подсветка активной кнопки
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    // фильтрация проектов
-    document.querySelectorAll('.project').forEach(block => {
-      if (selected === 'all' || block.dataset.category === selected) {
-        block.style.display = 'block';
-      } else {
-        block.style.display = 'none';
-      }
-    });
-  });
-});
 </script>
   <script>
 document.addEventListener('DOMContentLoaded', function () {
