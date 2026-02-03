@@ -87,6 +87,27 @@
 .offer a:hover {
   text-decoration: underline;
 }
+    <style>
+/* твои старые стили остаются */
+
+.category {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid #ffe08a;
+  border-radius: 40px;
+  background-color: #fffdf3;
+  color: #8a6d00;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.category:hover {
+  background-color: #fff6c9;
+  border-color: #ffd45c;
+}
+</style>
+
 </style>
 </head>
 <script>
@@ -152,31 +173,20 @@ updateCategoryCounts();
     <input type="text" id="search" placeholder="Поиск акции..."
            style="padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 6px; min-width: 220px; max-width: 100%;">
   </div>
-<div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-
-  <!-- СЛЕВА: КАТЕГОРИИ -->
-  <aside style="flex: 1 1 200px; min-width: 200px;">
-    <h3 style="margin-bottom: 15px;">Категории</h3>
-    <ul id="categoryList" style="list-style: none; padding: 0; margin: 0;">
-      <li><a href="#" onclick="filterOffers('all')">Все бренды <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Онлайн-сервисы')">Онлайн-сервисы <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Финансовые продукты')">Финансовые продукты <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Еда и напитки')">Еда и напитки <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Маркетплейсы')">Маркетплейсы <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Красота и здоровье')">Красота и здоровье <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Мода')">Мода <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Путешествия')">Путешествия <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Образование')">Образование <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Спорт')">Спорт <span class="count"></span></a></li>
-      <li><a href="#" onclick="filterOffers('Дом и ремонт')">Дом и ремонт <span class="count"></span></a></li>
-    </ul>
-  </aside>
-
-  <!-- СПРАВА: АКЦИИ ИЗ ТАБЛИЦЫ -->
-  <section style="flex: 3 1 600px; min-width: 300px;">
-  </section>
+<div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+  <a href="#" class="category">Все бренды</a>
+  <a href="#" class="category">Онлайн-сервисы</a>
+  <a href="#" class="category">Финансовые продукты</a>
+  <a href="#" class="category">Еда и напитки</a>
+  <a href="#" class="category">Маркетплейсы</a>
+  <a href="#" class="category">Красота и здоровье</a>
+  <a href="#" class="category">Мода</a>
+  <a href="#" class="category">Путешествия</a>
+  <a href="#" class="category">Образование</a>
+  <a href="#" class="category">Спорт</a>
+  <a href="#" class="category">Дом и ремонт</a>
+  <a href="#" class="category">Товары для животных</a>
 </div>
-
 </header>
 
   <!-- Контейнер -->
