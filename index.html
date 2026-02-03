@@ -57,7 +57,37 @@
     .copy-btn:hover {
       background: #f97316;
     }
-  </style>
+    <style>
+.offer {
+  border: 2px solid #ffe9a8;        /* нежно-жёлтая рамка */
+  border-radius: 40px;              /* овальная форма */
+  padding: 20px;
+  width: 280px;
+  background-color: #fffdf5;        /* мягкий светло-жёлтый фон */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.offer:hover {
+  background-color: #fff7d1;        /* подсветка при наведении */
+  border-color: #ffd86b;            /* чуть ярче рамка */
+}
+
+.offer h4 {
+  margin-top: 0;
+  font-size: 1.1em;
+  color: #8a6d00;                   /* тёплый золотистый текст */
+}
+
+.offer a {
+  color: #b88600;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.offer a:hover {
+  text-decoration: underline;
+}
+</style>
 </head>
 <script>
 function updateCategoryCounts() {
