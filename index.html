@@ -169,19 +169,20 @@ updateCategoryCounts();
     <input type="text" id="search" placeholder="Поиск акции..."
            style="padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 6px; min-width: 220px; max-width: 100%;">
   </div>
-<div id="categoryButtons" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 40px auto;">
+<div id="categoryButtons" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
   <button class="category-btn" data-category="all">Все бренды</button>
-  <button class="category-btn" data-category="Мода">Мода</button>
+  <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы</button>
+  <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты</button>
+  <button class="category-btn" data-category="Еда и напитки">Еда и напитки</button>
+  <button class="category-btn" data-category="Маркетплейсы">Маркетплейсы</button>
   <button class="category-btn" data-category="Красота и здоровье">Красота и здоровье</button>
+  <button class="category-btn" data-category="Мода">Мода</button>
+  <button class="category-btn" data-category="Путешествия">Путешествия</button>
+  <button class="category-btn" data-category="Образование">Образование</button>
+  <button class="category-btn" data-category="Спорт">Спорт</button>
+  <button class="category-btn" data-category="Дом и ремонт">Дом и ремонт</button>
   <button class="category-btn" data-category="Товары для животных">Товары для животных</button>
 </div>
-
-<div id="offers" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-  <div class="offer" data-category="Мода">Kari — скидка 8%</div>
-  <div class="offer" data-category="Красота и здоровье">Подружка — скидка 10%</div>
-  <div class="offer" data-category="Товары для животных">Petshop — скидка 15%</div>
-</div>
-
 <script>
 document.querySelectorAll('.category-btn').forEach(button => {
   button.addEventListener('click', () => {
