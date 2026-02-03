@@ -349,5 +349,30 @@ document.querySelectorAll('.category-btn').forEach(button => {
   });
 });
 </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const buttons = document.querySelectorAll('.category-btn');
+  const offers = document.querySelectorAll('.offer');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const selected = button.dataset.category;
+
+      // подсветка активной кнопки
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // фильтрация блоков .offer
+      offers.forEach(offer => {
+        if (selected === 'all' || offer.dataset.category === selected) {
+          offer.style.display = '';
+        } else {
+          offer.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+</script>
 </body>
 </html>
