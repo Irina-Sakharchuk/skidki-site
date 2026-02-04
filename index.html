@@ -209,11 +209,20 @@ document.querySelectorAll('.category-btn').forEach(button => {
           const card = document.createElement("div");
 card.className = "card offer";          // теперь это .offer
 card.dataset.category = item.category;  // теперь есть data-category
+  card.innerHTML = `
+${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
+<h2 style="margin-top: 0;">${item.title}</h2>
 
-         card.innerHTML = `
-  ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
-  <h2 style="margin-top: 0;">${item.title}</h2>
-  ...
+<div class="promo-buttons">
+    ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
+    ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
+    ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
+</div>
+
+<p>${item.description}</p>
+<p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">Категория: ${item.category}</p>
+`;
+
 
   <p style="margin: 0 0 10px 0;">
     ${item.description}
@@ -231,22 +240,6 @@ card.dataset.category = item.category;  // теперь есть data-category
         class="copy-btn">
         Скопировать и перейти на сайт
       </button>
-    </div>
-    <div class="promo-buttons">
-
-  {{#promo1}}
-  <a href="{{link1}}" class="promo-btn">Промокод {{promo1}}</a>
-  {{/promo1}}
-
-  {{#promo2}}
-  <a href="{{link2}}" class="promo-btn">Промокод {{promo2}}</a>
-  {{/promo2}}
-
-  {{#promo3}}
-  <a href="{{link3}}" class="promo-btn">Промокод {{promo3}}</a>
-  {{/promo3}}
-
-</div>
   ` : ""}
 
   <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
