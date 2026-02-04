@@ -198,64 +198,41 @@ document.querySelectorAll('.category-btn').forEach(button => {
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
     async function loadPromos() {
-      const res = await fetch(SHEET_URL);
-      const data = await res.json();
-      const container = document.getElementById("promo-container");
-      const searchInput = document.getElementById("search");
+    const res = await fetch(SHEET_URL);
+    const data = await res.json();
+    const container = document.getElementById("promo-container");
+    const searchInput = document.getElementById("search");
 
-      function render(items) {
-    container.innerHTML = "";
-    items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card offer";          // теперь это .offer
-        card.dataset.category = item.category;  // теперь есть data-category
+    function render(items) {
+        container.innerHTML = "";
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "card offer";
+            card.dataset.category = item.category;
 
-        card.innerHTML = `
-        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
-        <h2 style="margin-top: 0;">${item.title}</h2>
+            card.innerHTML = `
+                ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
+                <h2 style="margin-top: 0;">${item.title}</h2>
 
-        <div class="promo-buttons">
-            ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
-            ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
-            ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
-        </div>
+                <div class="promo-buttons">
+                    ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
+                    ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
+                    ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
+                </div>
 
-        <p>${item.description}</p>
-        <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">Категория: ${item.category}</p>
-        `;
+                <p>${item.description}</p>
 
-        // ⭐ ЭТО СТРОКА, КОТОРОЙ НЕ ХВАТАЛО ⭐
-        container.appendChild(card);
-    });
-}
-  <p style="margin: 0 0 10px 0;">
-    ${item.description}
-  </p>
+                <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
+                    Категория: ${item.category}
+                </p>
+            `;
 
-  ${item.promokod ? `
-    <div style="background: #fff7ed; padding: 10px; border-left: 4px solid #fb923c; border-radius: 6px; margin: 10px 0;">
-      <p style="margin: 0 0 8px 0;">
-        <strong>Промокод:</strong>
-        <span style="font-family: monospace;" id="code-${item.id}">${item.promokod}</span>
-      </p>
-
-      <button id="btn-${item.id}"
-        onclick="copyAndGo('${item.id}', '${item.link}')"
-        class="copy-btn">
-        Скопировать и перейти на сайт
-      </button>
-  ` : ""}
-
-  <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
-    Категория: ${item.category}
-  </p>
-`;
-
-          container.appendChild(card);
+            container.appendChild(card);
         });
-      }
+    }
 
-      render(data);
+    render(data);
+}
 
       searchInput.addEventListener("input", () => {
         const query = searchInput.value.toLowerCase();
