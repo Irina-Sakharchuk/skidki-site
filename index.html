@@ -278,8 +278,9 @@
     container.addEventListener("click", (e) => {
       if (e.target.closest(".toggle-description")) {
         const btn = e.target.closest(".toggle-description");
-        const text = btn.previousElementSibling;
-        const arrow = btn.querySelector(".toggle-arrow");
+       const card = btn.closest(".card");
+const text = card.querySelector(".description-text");
+const arrow = btn.querySelector(".toggle-arrow");
 
         if (text.style.maxHeight === "none") {
           text.style.maxHeight = "70px";
@@ -291,7 +292,24 @@
           btn.firstChild.textContent = "Скрыть ";
         }
       }
-    });
+    });container.addEventListener("click", (e) => {
+  const btn = e.target.closest(".toggle-description");
+  if (!btn) return;
+
+  const card = btn.closest(".card");
+  const text = card.querySelector(".description-text");
+  const arrow = btn.querySelector(".toggle-arrow");
+
+  if (text.style.maxHeight === "none") {
+    text.style.maxHeight = "70px";
+    arrow.classList.remove("open");
+    btn.firstChild.textContent = "Подробнее ";
+  } else {
+    text.style.maxHeight = "none";
+    arrow.classList.add("open");
+    btn.firstChild.textContent = "Скрыть ";
+  }
+});
   }
 
   function copyAndGo(code, url, btn) {
