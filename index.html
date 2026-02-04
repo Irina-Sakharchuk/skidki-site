@@ -399,6 +399,25 @@
       window.open(url, "_blank");
     });
   }
+// Открытие / закрытие описания
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".toggle-description");
+  if (!btn) return;
+
+  const card = btn.closest(".card");
+  const text = card.querySelector(".description-text");
+  const arrow = btn.querySelector(".toggle-arrow");
+
+  const isOpen = text.classList.toggle("open");
+
+  if (isOpen) {
+    arrow.classList.add("open");
+    btn.childNodes[0].textContent = "Скрыть ";
+  } else {
+    arrow.classList.remove("open");
+    btn.childNodes[0].textContent = "Подробнее ";
+  }
+});
 
   loadPromos();
 </script>
