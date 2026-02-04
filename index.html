@@ -8,11 +8,9 @@
 
   <title>Скидки на пике — актуальные акции и промокоды</title>
 
-  <!-- SEO -->
   <meta name="description" content="SkidkiNaPike — актуальные скидки и промокоды с маркетплейсов. Гаджеты, одежда, косметика, продукты и аксессуары в выгодных подборках.">
   <meta name="robots" content="index, follow">
 
-  <!-- Стили -->
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
@@ -22,121 +20,100 @@
       color: #111827;
     }
 
-    /* Контейнер карточек */
+    header {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
     #promo-container {
       display: grid;
       gap: 20px;
+      justify-content: center;
     }
 
-    /* Карточка */
     .card {
       background: white;
       border: 1px solid #e5e7eb;
       padding: 15px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      max-width: 320px;
     }
 
     .card img {
-      width: 100%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
       border-radius: 8px;
       margin-bottom: 12px;
     }
 
-    .copy-btn {
-      padding: 10px 14px;
-      font-size: 0.95em;
-      background: #fb923c;
-      color: white;
-      border: none;
-      border-radius: 6px;
+    .offer {
+      border: 2px solid #ffe9a8;
+      border-radius: 40px;
+      padding: 20px;
+      background-color: #fffdf5;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .offer:hover {
+      background-color: #fff7d1;
+      border-color: #ffd86b;
+    }
+
+    .category-btn {
+      padding: 12px 18px;
+      border: 2px solid #ffe08a;
+      border-radius: 40px;
+      background-color: #fffdf3;
+      color: #8a6d00;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
+      text-align: center;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
-    .copy-btn:hover {
-      background: #f97316;
+    .category-btn:hover,
+    .category-btn.active {
+      background-color: #fff6c9;
+      border-color: #ffd45c;
     }
-    <style>
-.offer {
-  border: 2px solid #ffe9a8;        /* нежно-жёлтая рамка */
-  border-radius: 40px;              /* овальная форма */
-  padding: 20px;
-  width: 280px;
-  background-color: #fffdf5;        /* мягкий светло-жёлтый фон */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
 
-.offer:hover {
-  background-color: #fff7d1;        /* подсветка при наведении */
-  border-color: #ffd86b;            /* чуть ярче рамка */
-}
+    .promo-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 12px 0;
+    }
 
-.offer h4 {
-  margin-top: 0;
-  font-size: 1.1em;
-  color: #8a6d00;                   /* тёплый золотистый текст */
-}
+    .promo-btn {
+      display: block;
+      text-align: center;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #ffcc00;
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95em;
+      transition: background-color 0.2s ease;
+    }
 
-.offer a {
-  color: #b88600;
-  text-decoration: none;
-  font-weight: bold;
-}
+    .promo-btn:hover {
+      background: #ffdb4d;
+    }
 
-.offer a:hover {
-  text-decoration: underline;
-}
-  <style>
-.category-btn {
-  padding: 12px 18px;
-  border: 2px solid #ffe08a;
-  border-radius: 40px;
-  background-color: #fffdf3;
-  color: #8a6d00;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.category-btn:hover,
-.category-btn.active {
-  background-color: #fff6c9;
-  border-color: #ffd45c;
-}
-</style>
+    @media (min-width: 768px) {
+      #promo-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const buttons = document.querySelectorAll('.category-btn');
-
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const selected = button.dataset.category;
-
-      // подсветка активной кнопки
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-
-      // находим все элементы с data-category, КРОМЕ кнопок
-      const items = document.querySelectorAll('[data-category]:not(.category-btn)');
-
-      items.forEach(item => {
-        if (selected === 'all' || item.dataset.category === selected) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    });
-  });
-});
-</script>
 <body>
-<header style="background: #ffffff; padding: 25px 20px; border-bottom: 1px solid #e5e7eb;">
+<header>
   <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 15px; max-width: 900px; margin: 0 auto;">
-    
     <img src="https://github.com/Irina-Sakharchuk/skidki-site/blob/main/logo.jpg?raw=true"
          alt="SALE"
          style="width: 140px; height: auto; object-fit: contain;">
@@ -145,151 +122,109 @@ document.addEventListener('DOMContentLoaded', function () {
       Скидки на пике — лучшие акции и промокоды
     </h1>
 
-    <!-- ОПИСАНИЕ -->
     <p style="margin-top: 10px; color: #4b5563; max-width: 700px;">
       Добро пожаловать! Здесь вы найдёте лучшие предложения на гаджеты, одежду, продукты,
       косметику и аксессуары. Мы обновляем подборки ежедневно, чтобы вы экономили на покупках.
     </p>
 
-    <!-- ПОИСК -->
     <input type="text" id="search" placeholder="Поиск акции..."
            style="padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 6px; min-width: 220px; max-width: 100%;">
   </div>
-<div id="categoryButtons" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px 20px; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-  <button class="category-btn" data-category="all">Все бренды</button>
-  <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы</button>
-  <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты</button>
-  <button class="category-btn" data-category="Еда и напитки">Еда и напитки</button>
-  <button class="category-btn" data-category="Маркетплейсы">Маркетплейсы</button>
-  <button class="category-btn" data-category="Красота и здоровье">Красота и здоровье</button>
-  <button class="category-btn" data-category="Мода">Мода</button>
-  <button class="category-btn" data-category="Путешествия">Путешествия</button>
-  <button class="category-btn" data-category="Образование">Образование</button>
-  <button class="category-btn" data-category="Спорт">Спорт</button>
-  <button class="category-btn" data-category="Дом и ремонт">Дом и ремонт</button>
-  <button class="category-btn" data-category="Товары для животных">Товары для животных</button>
-<script>
-document.querySelectorAll('.category-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const selected = button.dataset.category;
 
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    document.querySelectorAll('.offer').forEach(card => {
-      if (selected === 'all' || card.dataset.category === selected) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-});
-</script>
+  <div id="categoryButtons" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px 20px; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    <button class="category-btn" data-category="all">Все бренды</button>
+    <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы</button>
+    <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты</button>
+    <button class="category-btn" data-category="Еда и напитки">Еда и напитки</button>
+    <button class="category-btn" data-category="Маркетплейсы">Маркетплейсы</button>
+    <button class="category-btn" data-category="Красота и здоровье">Красота и здоровье</button>
+    <button class="category-btn" data-category="Мода">Мода</button>
+    <button class="category-btn" data-category="Путешествия">Путешествия</button>
+    <button class="category-btn" data-category="Образование">Образование</button>
+    <button class="category-btn" data-category="Спорт">Спорт</button>
+    <button class="category-btn" data-category="Дом и ремонт">Дом и ремонт</button>
+    <button class="category-btn" data-category="Товары для животных">Товары для животных</button>
+  </div>
 </header>
 
-  <!-- Контейнер -->
-  <main style="padding: 20px;">
-    <div id="promo-container"></div>
-  </main>
+<main style="padding: 20px;">
+  <div id="promo-container"></div>
+</main>
 
-  <!-- JavaScript -->
-  <script>
-    const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
+<script>
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
-    async function loadPromos() {
+  async function loadPromos() {
     const res = await fetch(SHEET_URL);
     const data = await res.json();
+
     const container = document.getElementById("promo-container");
     const searchInput = document.getElementById("search");
+    const categoryButtons = document.querySelectorAll('.category-btn');
 
     function render(items) {
-        container.innerHTML = "";
-        items.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "card offer";
-            card.dataset.category = item.category;
+      container.innerHTML = "";
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card offer";
+        card.dataset.category = item.category;
 
-            card.innerHTML = `
-                ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
-                <h2 style="margin-top: 0;">${item.title}</h2>
+        card.innerHTML = `
+          ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+          <h2 style="margin-top: 0;">${item.title}</h2>
 
-                <div class="promo-buttons">
-                    ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
-                    ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
-                    ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
-                </div>
+          <div class="promo-buttons">
+            ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
+            ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
+            ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
+          </div>
 
-                <p>${item.description}</p>
+          <p>${item.description}</p>
 
-                <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
-                    Категория: ${item.category}
-                </p>
-            `;
+          <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
+            Категория: ${item.category}
+          </p>
+        `;
 
-            container.appendChild(card);
-        });
+        container.appendChild(card);
+      });
     }
 
+    // начальный рендер
     render(data);
-}
 
-      searchInput.addEventListener("input", () => {
-        const query = searchInput.value.toLowerCase();
-        const filtered = data.filter(item =>
-          item.title.toLowerCase().includes(query) ||
-          item.brand.toLowerCase().includes(query) ||
-          item.category.toLowerCase().includes(query)
-        );
-        render(filtered);
-      });
-    }
+    // поиск
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = data.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        (item.brand || "").toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+      render(filtered);
+    });
 
-    function copyAndGo(id, url) {
-      const code = document.getElementById(`code-${id}`).textContent;
-      const btn = document.getElementById(`btn-${id}`);
+    // фильтр по категориям
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.category;
 
-      navigator.clipboard.writeText(code).then(() => {
-        const originalText = btn.textContent;
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
 
-        btn.textContent = "✓ Скопировано";
-        btn.style.background = "#16a34a";
-
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.background = "#fb923c";
-        }, 1000);
-
-        window.open(url, "_blank");
-      });
-    }
-
-    loadPromos();
-</script>
-  <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const buttons = document.querySelectorAll('.category-btn');
-  const offers = document.querySelectorAll('.offer');
-
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const selected = button.dataset.category;
-
-      // подсветка активной кнопки
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-
-      // фильтрация блоков .offer
-      offers.forEach(offer => {
-        if (selected === 'all' || offer.dataset.category === selected) {
-          offer.style.display = '';
-        } else {
-          offer.style.display = 'none';
-        }
+        const offers = document.querySelectorAll('.offer');
+        offers.forEach(offer => {
+          if (selected === 'all' || offer.dataset.category === selected) {
+            offer.style.display = '';
+          } else {
+            offer.style.display = 'none';
+          }
+        });
       });
     });
-  });
-});
+  }
+
+  loadPromos();
 </script>
 </body>
 </html>
