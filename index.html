@@ -323,27 +323,50 @@
         const card = document.createElement("div");
         card.className = "card";
 
-        let promoHTML = "";
+       let promoHTML = "";
 
-        if (item.promo1) {
-          promoHTML += `
-            <div class="promo-block">
-              <div class="promo-code">Промокод: ${item.promo1}</div>
-              <button class="big-promo-btn" onclick="copyAndGo('${item.promo1}', '${item.link1}', this)">
-                Скопировать и перейти →
-              </button>
-            </div>`;
-        }
+// Промокод 1
+if (item.promo1) {
+  promoHTML += `
+    <div class="promo-block">
+      <div class="promo-code">Промокод: ${item.promo1}</div>
+      <button class="big-promo-btn" onclick="copyAndGo('${item.promo1}', '${item.link1}', this)">
+        Скопировать и перейти →
+      </button>
+    </div>`;
+}
 
-        if (!item.promo1) {
-          promoHTML = `
-            <div class="promo-block">
-              <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
-                Переходи по ссылке →
-              </button>
-            </div>`;
-        }
+// Промокод 2
+if (item.promo2) {
+  promoHTML += `
+    <div class="promo-block">
+      <div class="promo-code">Промокод: ${item.promo2}</div>
+      <button class="big-promo-btn" onclick="copyAndGo('${item.promo2}', '${item.link2}', this)">
+        Скопировать и перейти →
+      </button>
+    </div>`;
+}
 
+// Промокод 3
+if (item.promo3) {
+  promoHTML += `
+    <div class="promo-block">
+      <div class="promo-code">Промокод: ${item.promo3}</div>
+      <button class="big-promo-btn" onclick="copyAndGo('${item.promo3}', '${item.link3}', this)">
+        Скопировать и перейти →
+      </button>
+    </div>`;
+}
+
+// Если нет ни одного промокода
+if (!item.promo1 && !item.promo2 && !item.promo3) {
+  promoHTML = `
+    <div class="promo-block">
+      <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
+        Переходи по ссылке →
+      </button>
+    </div>`;
+}
         card.innerHTML = `
           ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
           <h2>${item.title}</h2>
