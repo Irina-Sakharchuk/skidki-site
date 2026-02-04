@@ -214,38 +214,31 @@
           formattedDescription = formattedDescription.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
         }
 
-        card.innerHTML = `
-          ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
-          <h2>${item.title}</h2>
+        let promoHTML = "";
 
-          ${item.promo1 ? `
+        if (item.promo1) {
+          promoHTML = `
             <div class="promo-block">
               <div class="promo-code">Промокод: ${item.promo1}</div>
               <button class="big-promo-btn" onclick="copyAndGo('${item.promo1}', '${item.link1}', this)">
                 Скопировать и перейти →
               </button>
-            </div>` : ""}
-
-          ${item.promo2 ? `
+            </div>`;
+        } else {
+          promoHTML = `
             <div class="promo-block">
-              <div class="promo-code">Промокод: ${item.promo2}</div>
-              <button class="big-promo-btn" onclick="copyAndGo('${item.promo2}', '${item.link2}', this)">
-                Скопировать и перейти →
+              <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
+                Переходи по ссылке →
               </button>
-            </div>` : ""}
+            </div>`;
+        }
 
-          ${item.promo3 ? `
-            <div class="promo-block">
-              <div class="promo-code">Промокод: ${item.promo3}</div>
-              <button class="big-promo-btn" onclick="copyAndGo('${item.promo3}', '${item.link3}', this)">
-                Скопировать и перейти →
-              </button>
-            </div>` : ""}
-<div class="promo-block">
-  <button class="big-promo-btn" onclick="window.open(item.link1, '_blank')">
-    Переходи по ссылке →
-  </button>
-</div>
+        card.innerHTML = `
+          ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+          <h2>${item.title}</h2>
+
+          ${promoHTML}
+
           <div class="description-wrapper">
             <p class="description-text">${formattedDescription}</p>
             <button class="toggle-description">
@@ -282,7 +275,6 @@
       });
     });
 
-    // Делегирование событий для "Подробнее"
     container.addEventListener("click", (e) => {
       const btn = e.target.closest(".toggle-description");
       if (!btn) return;
