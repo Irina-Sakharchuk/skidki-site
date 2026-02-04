@@ -90,29 +90,12 @@
       background: #ffdb4d;
     }
 
-    .category-btn {
-      padding: 12px 18px;
-      border: 2px solid #ffe08a;
-      border-radius: 40px;
-      background-color: #fffdf3;
-      color: #8a6d00;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .category-btn:hover,
-    .category-btn.active {
-      background-color: #fff6c9;
-      border-color: #ffd45c;
-    }
-
     .description-wrapper {
       margin-top: 10px;
     }
 
     .description-text {
-      white-space: pre-line;
+      white-space: normal;
       max-height: 70px;
       overflow: hidden;
       transition: max-height 0.3s ease;
@@ -164,21 +147,6 @@
     <input id="search" type="text" placeholder="Поиск акции..."
            style="padding:10px; border:1px solid #ccc; border-radius:6px; width:260px;">
   </div>
-
-  <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:15px; max-width:1200px; margin:40px auto; padding:0 20px;">
-    <button class="category-btn" data-category="all">Все бренды</button>
-    <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы</button>
-    <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты</button>
-    <button class="category-btn" data-category="Еда и напитки">Еда и напитки</button>
-    <button class="category-btn" data-category="Маркетплейсы">Маркетплейсы</button>
-    <button class="category-btn" data-category="Красота и здоровье">Красота и здоровье</button>
-    <button class="category-btn" data-category="Мода">Мода</button>
-    <button class="category-btn" data-category="Путешествия">Путешествия</button>
-    <button class="category-btn" data-category="Образование">Образование</button>
-    <button class="category-btn" data-category="Спорт">Спорт</button>
-    <button class="category-btn" data-category="Дом и ремонт">Дом и ремонт</button>
-    <button class="category-btn" data-category="Товары для животных">Товары для животных</button>
-  </div>
 </header>
 
 <main>
@@ -194,7 +162,15 @@
 
     const container = document.getElementById("promo-container");
     const searchInput = document.getElementById("search");
-    const categoryButtons = document.querySelectorAll(".category-btn");
+
+    function safeFormat(text) {
+      return (text || "")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n{2,}/g, "<br><br>")
+        .replace(/\n/g, "<br>")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
 
     function render(items) {
       container.innerHTML = "";
@@ -202,17 +178,8 @@
       items.forEach(item => {
         const card = document.createElement("div");
         card.className = "card";
-        card.dataset.category = item.category;
 
-        let formattedDescription = item.description
-          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-          .replace(/•\s?(.*)/g, "<li>$1</li>")
-          .replace(/\n{2,}/g, "<br><br>")
-          .replace(/\n/g, "<br>");
-
-        if (formattedDescription.includes("<li>")) {
-          formattedDescription = formattedDescription.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
-        }
+        const description = safeFormat(item.description);
 
         let promoHTML = "";
 
@@ -240,14 +207,12 @@
           ${promoHTML}
 
           <div class="description-wrapper">
-            <p class="description-text">${formattedDescription}</p>
+            <p class="description-text">${description}</p>
             <button class="toggle-description">
               Подробнее
               <span class="toggle-arrow">⌄</span>
             </button>
           </div>
-
-          <p style="color:#6b7280; font-size:0.9em;">Категория: ${item.category}</p>
         `;
 
         container.appendChild(card);
@@ -265,32 +230,26 @@
       ));
     });
 
-    categoryButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        categoryButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const cat = btn.dataset.category;
-        render(cat === "all" ? data : data.filter(i => i.category === cat));
-      });
-    });
-
     container.addEventListener("click", (e) => {
       const btn = e.target.closest(".toggle-description");
       if (!btn) return;
 
       const card = btn.closest(".card");
+      if (!card) return;
+
       const text = card.querySelector(".description-text");
       const arrow = btn.querySelector(".toggle-arrow");
+
+      if (!text || !arrow) return;
 
       const isOpen = text.classList.toggle("open");
 
       if (isOpen) {
         arrow.classList.add("open");
-        btn.firstChild.textContent = "Скрыть ";
+        btn.childNodes[0].textContent = "Скрыть ";
       } else {
         arrow.classList.remove("open");
-        btn.firstChild.textContent = "Подробнее ";
+        btn.childNodes[0].textContent = "Подробнее ";
       }
     });
   }
