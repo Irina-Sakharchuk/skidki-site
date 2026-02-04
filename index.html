@@ -118,6 +118,10 @@
       transition: max-height 0.3s ease;
     }
 
+    .description-text.open {
+      max-height: none !important;
+    }
+
     .toggle-description {
       background: none;
       border: none;
@@ -203,7 +207,7 @@
         let formattedDescription = item.description
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
           .replace(/•\s?(.*)/g, "<li>$1</li>")
-          .replace(/\n{2,}/g, "</p><p>")
+          .replace(/\n{2,}/g, "<br><br>")
           .replace(/\n/g, "<br>");
 
         if (formattedDescription.includes("<li>")) {
@@ -276,40 +280,23 @@
 
     // Делегирование событий для "Подробнее"
     container.addEventListener("click", (e) => {
-      if (e.target.closest(".toggle-description")) {
-        const btn = e.target.closest(".toggle-description");
-       const card = btn.closest(".card");
-const text = card.querySelector(".description-text");
-const arrow = btn.querySelector(".toggle-arrow");
+      const btn = e.target.closest(".toggle-description");
+      if (!btn) return;
 
-        if (text.style.maxHeight === "none") {
-          text.style.maxHeight = "70px";
-          arrow.classList.remove("open");
-          btn.firstChild.textContent = "Подробнее ";
-        } else {
-          text.style.maxHeight = "none";
-          arrow.classList.add("open");
-          btn.firstChild.textContent = "Скрыть ";
-        }
+      const card = btn.closest(".card");
+      const text = card.querySelector(".description-text");
+      const arrow = btn.querySelector(".toggle-arrow");
+
+      const isOpen = text.classList.toggle("open");
+
+      if (isOpen) {
+        arrow.classList.add("open");
+        btn.firstChild.textContent = "Скрыть ";
+      } else {
+        arrow.classList.remove("open");
+        btn.firstChild.textContent = "Подробнее ";
       }
-    });container.addEventListener("click", (e) => {
-  const btn = e.target.closest(".toggle-description");
-  if (!btn) return;
-
-  const card = btn.closest(".card");
-  const text = card.querySelector(".description-text");
-  const arrow = btn.querySelector(".toggle-arrow");
-
-  if (text.style.maxHeight === "none") {
-    text.style.maxHeight = "70px";
-    arrow.classList.remove("open");
-    btn.firstChild.textContent = "Подробнее ";
-  } else {
-    text.style.maxHeight = "none";
-    arrow.classList.add("open");
-    btn.firstChild.textContent = "Скрыть ";
-  }
-});
+    });
   }
 
   function copyAndGo(code, url, btn) {
