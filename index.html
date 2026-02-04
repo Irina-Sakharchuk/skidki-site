@@ -154,6 +154,55 @@
 <script>
   const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
+  // --- УМНОЕ ФОРМАТИРОВАНИЕ ОПИСАНИЯ ---
+  function formatDescription(text) {
+    if (!text) return "";
+
+    // Если есть HTML — оставляем как есть (SEO-режим)
+    if (/<[a-z][\s\S]*>/i.test(text)) {
+      return text;
+    }
+
+    // Жирный текст **...**
+    text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    // Преобразуем списки •
+    if (/•/.test(text)) {
+      const lines = text.split("\n");
+      let inList = false;
+      let result = "";
+
+      lines.forEach(line => {
+        if (line.trim().startsWith("•")) {
+          if (!inList) {
+            result += "<ul>";
+            inList = true;
+          }
+          result += `<li>${line.replace("•", "").trim()}</li>`;
+        } else {
+          if (inList) {
+            result += "</ul>";
+            inList = false;
+          }
+          if (line.trim() !== "") {
+            result += `<p>${line.trim()}</p>`;
+          }
+        }
+      });
+
+      if (inList) result += "</ul>";
+      return result;
+    }
+
+    // Абзацы (двойные переносы)
+    text = text
+      .split(/\n{2,}/)
+      .map(p => `<p>${p.trim().replace(/\n/g, "<br>")}</p>`)
+      .join("");
+
+    return text;
+  }
+
   async function loadPromos() {
     const res = await fetch(SHEET_URL);
     const data = await res.json();
@@ -201,7 +250,7 @@
             </div>`;
         }
 
-        // Если НЕТ ни одного промокода
+        // Если нет ни одного промокода
         if (!item.promo1 && !item.promo2 && !item.promo3) {
           promoHTML = `
             <div class="promo-block">
@@ -219,7 +268,7 @@
           ${promoHTML}
 
           <div class="description-wrapper">
-            <div class="description-text">${item.description || ""}</div>
+            <div class="description-text">${formatDescription(item.description)}</div>
             <button class="toggle-description">
               Подробнее
               <span class="toggle-arrow">⌄</span>
