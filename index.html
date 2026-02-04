@@ -126,6 +126,18 @@
       cursor: pointer;
       padding: 5px 0;
       font-size: 0.95em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-arrow.open {
+      transform: rotate(180deg);
     }
   </style>
 </head>
@@ -228,7 +240,10 @@
 
           <div class="description-wrapper">
             <p class="description-text">${formattedDescription}</p>
-            <button class="toggle-description">Подробнее ⌄</button>
+            <button class="toggle-description">
+              Подробнее
+              <span class="toggle-arrow">⌄</span>
+            </button>
           </div>
 
           <p style="color:#6b7280; font-size:0.9em;">Категория: ${item.category}</p>
@@ -240,5 +255,62 @@
 
     render(data);
 
-    // поиск
-    searchInput.addEventListener
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      render(data.filter(item =>
+        item.title.toLowerCase().includes(q) ||
+        (item.brand || "").toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      ));
+    });
+
+    categoryButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        categoryButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const cat = btn.dataset.category;
+        render(cat === "all" ? data : data.filter(i => i.category === cat));
+      });
+    });
+
+    // Делегирование событий для "Подробнее"
+    container.addEventListener("click", (e) => {
+      if (e.target.closest(".toggle-description")) {
+        const btn = e.target.closest(".toggle-description");
+        const text = btn.previousElementSibling;
+        const arrow = btn.querySelector(".toggle-arrow");
+
+        if (text.style.maxHeight === "none") {
+          text.style.maxHeight = "70px";
+          arrow.classList.remove("open");
+          btn.firstChild.textContent = "Подробнее ";
+        } else {
+          text.style.maxHeight = "none";
+          arrow.classList.add("open");
+          btn.firstChild.textContent = "Скрыть ";
+        }
+      }
+    });
+  }
+
+  function copyAndGo(code, url, btn) {
+    navigator.clipboard.writeText(code).then(() => {
+      const original = btn.textContent;
+      btn.textContent = "✓ Скопировано";
+      btn.style.background = "#16a34a";
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = "#ffcc00";
+      }, 1000);
+
+      window.open(url, "_blank");
+    });
+  }
+
+  loadPromos();
+</script>
+
+</body>
+</html>
