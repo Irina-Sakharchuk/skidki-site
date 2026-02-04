@@ -204,26 +204,30 @@ document.querySelectorAll('.category-btn').forEach(button => {
       const searchInput = document.getElementById("search");
 
       function render(items) {
-        container.innerHTML = "";
-        items.forEach(item => {
-          const card = document.createElement("div");
-card.className = "card offer";          // теперь это .offer
-card.dataset.category = item.category;  // теперь есть data-category
-  card.innerHTML = `
-${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
-<h2 style="margin-top: 0;">${item.title}</h2>
+    container.innerHTML = "";
+    items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card offer";          // теперь это .offer
+        card.dataset.category = item.category;  // теперь есть data-category
 
-<div class="promo-buttons">
-    ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
-    ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
-    ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
-</div>
+        card.innerHTML = `
+        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:120px; height:120px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : ""}
+        <h2 style="margin-top: 0;">${item.title}</h2>
 
-<p>${item.description}</p>
-<p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">Категория: ${item.category}</p>
-`;
+        <div class="promo-buttons">
+            ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
+            ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
+            ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
+        </div>
 
+        <p>${item.description}</p>
+        <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">Категория: ${item.category}</p>
+        `;
 
+        // ⭐ ЭТО СТРОКА, КОТОРОЙ НЕ ХВАТАЛО ⭐
+        container.appendChild(card);
+    });
+}
   <p style="margin: 0 0 10px 0;">
     ${item.description}
   </p>
