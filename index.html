@@ -95,7 +95,6 @@
     }
 
     .description-text {
-      white-space: normal;
       max-height: 70px;
       overflow: hidden;
       transition: max-height 0.3s ease;
@@ -152,7 +151,6 @@
 <main>
   <div id="promo-container"></div>
 </main>
-
 <script>
   const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
@@ -163,15 +161,6 @@
     const container = document.getElementById("promo-container");
     const searchInput = document.getElementById("search");
 
-    function safeFormat(text) {
-      return (text || "")
-        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\n{2,}/g, "<br><br>")
-        .replace(/\n/g, "<br>")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
-
     function render(items) {
       container.innerHTML = "";
 
@@ -179,19 +168,41 @@
         const card = document.createElement("div");
         card.className = "card";
 
-        const description = safeFormat(item.description);
-
+        // --- ПРОМОКОДЫ ---
         let promoHTML = "";
 
         if (item.promo1) {
-          promoHTML = `
+          promoHTML += `
             <div class="promo-block">
               <div class="promo-code">Промокод: ${item.promo1}</div>
               <button class="big-promo-btn" onclick="copyAndGo('${item.promo1}', '${item.link1}', this)">
                 Скопировать и перейти →
               </button>
             </div>`;
-        } else {
+        }
+
+        if (item.promo2) {
+          promoHTML += `
+            <div class="promo-block">
+              <div class="promo-code">Промокод: ${item.promo2}</div>
+              <button class="big-promo-btn" onclick="copyAndGo('${item.promo2}', '${item.link2}', this)">
+                Скопировать и перейти →
+              </button>
+            </div>`;
+        }
+
+        if (item.promo3) {
+          promoHTML += `
+            <div class="promo-block">
+              <div class="promo-code">Промокод: ${item.promo3}</div>
+              <button class="big-promo-btn" onclick="copyAndGo('${item.promo3}', '${item.link3}', this)">
+                Скопировать и перейти →
+              </button>
+            </div>`;
+        }
+
+        // Если НЕТ ни одного промокода
+        if (!item.promo1 && !item.promo2 && !item.promo3) {
           promoHTML = `
             <div class="promo-block">
               <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
@@ -200,6 +211,7 @@
             </div>`;
         }
 
+        // --- КАРТОЧКА ---
         card.innerHTML = `
           ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
           <h2>${item.title}</h2>
@@ -207,7 +219,7 @@
           ${promoHTML}
 
           <div class="description-wrapper">
-            <p class="description-text">${description}</p>
+            <div class="description-text">${item.description || ""}</div>
             <button class="toggle-description">
               Подробнее
               <span class="toggle-arrow">⌄</span>
@@ -219,8 +231,10 @@
       });
     }
 
+    // Первичная отрисовка
     render(data);
 
+    // Поиск
     searchInput.addEventListener("input", () => {
       const q = searchInput.value.toLowerCase();
       render(data.filter(item =>
@@ -230,13 +244,12 @@
       ));
     });
 
+    // Подробнее / Скрыть
     container.addEventListener("click", (e) => {
       const btn = e.target.closest(".toggle-description");
       if (!btn) return;
 
       const card = btn.closest(".card");
-      if (!card) return;
-
       const text = card.querySelector(".description-text");
       const arrow = btn.querySelector(".toggle-arrow");
 
@@ -254,6 +267,7 @@
     });
   }
 
+  // Копирование промокода
   function copyAndGo(code, url, btn) {
     navigator.clipboard.writeText(code).then(() => {
       const original = btn.textContent;
@@ -271,6 +285,5 @@
 
   loadPromos();
 </script>
-
 </body>
 </html>
