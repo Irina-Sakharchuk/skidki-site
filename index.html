@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Скидки на пике — актуальные акции и промокоды</title>
+  <title>Скидки на пике — лучшие акции и промокоды</title>
 
   <style>
     body {
@@ -99,28 +99,21 @@
       overflow: hidden;
       transition: max-height 0.3s ease;
     }
-/* Убираем лишние отступы внутри описания */
-.description-text p,
-.description-text ul,
-.description-text li,
-.description-text h1,
-.description-text h2,
-.description-text h3,
-.description-text h4,
-.description-text h5,
-.description-text h6 {
-  margin: 0 0 8px 0;
-  padding: 0;
-}
-
-/* Красивые списки */
-.description-text ul {
-  padding-left: 18px;
-  margin-bottom: 8px;
-}
 
     .description-text.open {
       max-height: none !important;
+    }
+
+    .description-text p,
+    .description-text ul,
+    .description-text li {
+      margin: 0 0 8px 0;
+      padding: 0;
+    }
+
+    .description-text ul {
+      padding-left: 18px;
+      margin-bottom: 8px;
     }
 
     .toggle-description {
@@ -144,6 +137,56 @@
     .toggle-arrow.open {
       transform: rotate(180deg);
     }
+
+    /* Адаптивная сетка категорий */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .category-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .category-btn {
+      padding: 10px 16px;
+      background: #fff7d1;
+      border: 1px solid #ffd86b;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: 0.2s ease;
+      width: 100%;
+      text-align: center;
+    }
+
+    .category-btn:hover {
+      background: #ffec9a;
+    }
+
+    .category-btn.active {
+      background: #ffcc00;
+      border-color: #ffcc00;
+      font-weight: 700;
+    }
+
+    .category-btn .count {
+      font-weight: 700;
+      margin-left: 4px;
+      color: #444;
+    }
   </style>
 </head>
 
@@ -163,29 +206,39 @@
     </p>
 
     <input id="search" type="text" placeholder="Поиск акции..."
-           style="padding:10px; border:1px solid #ccc; border-radius:6px; width:260px;">
+           style="padding:10px; border:1px solid #ccc; border-radius:6px; width:260px; margin-bottom:20px;">
+  </div>
+
+  <!-- КАТЕГОРИИ -->
+  <div id="categories" class="category-grid">
+    <button class="category-btn" data-category="all">Все бренды <span class="count"></span></button>
+    <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы <span class="count"></span></button>
+    <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты <span class="count"></span></button>
+    <button class="category-btn" data-category="Еда и напитки">Еда и напитки <span class="count"></span></button>
+    <button class="category-btn" data-category="Маркетплейсы">Маркетплейсы <span class="count"></span></button>
+    <button class="category-btn" data-category="Красота и здоровье">Красота и здоровье <span class="count"></span></button>
+    <button class="category-btn" data-category="Мода">Мода <span class="count"></span></button>
+    <button class="category-btn" data-category="Путешествия">Путешествия <span class="count"></span></button>
+    <button class="category-btn" data-category="Образование">Образование <span class="count"></span></button>
+    <button class="category-btn" data-category="Спорт">Спорт <span class="count"></span></button>
+    <button class="category-btn" data-category="Дом и ремонт">Дом и ремонт <span class="count"></span></button>
+    <button class="category-btn" data-category="Товары для животных">Товары для животных <span class="count"></span></button>
   </div>
 </header>
 
 <main>
   <div id="promo-container"></div>
 </main>
+
 <script>
   const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
-  // --- УМНОЕ ФОРМАТИРОВАНИЕ ОПИСАНИЯ ---
   function formatDescription(text) {
     if (!text) return "";
+    if (/<[a-z][\s\S]*>/i.test(text)) return text;
 
-    // Если есть HTML — оставляем как есть (SEO-режим)
-    if (/<[a-z][\s\S]*>/i.test(text)) {
-      return text;
-    }
-
-    // Жирный текст **...**
     text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-    // Преобразуем списки •
     if (/•/.test(text)) {
       const lines = text.split("\n");
       let inList = false;
@@ -213,13 +266,10 @@
       return result;
     }
 
-    // Абзацы (двойные переносы)
-    text = text
+    return text
       .split(/\n{2,}/)
       .map(p => `<p>${p.trim().replace(/\n/g, "<br>")}</p>`)
       .join("");
-
-    return text;
   }
 
   async function loadPromos() {
@@ -228,6 +278,43 @@
 
     const container = document.getElementById("promo-container");
     const searchInput = document.getElementById("search");
+    const categoryButtons = document.querySelectorAll(".category-btn");
+
+    let activeCategory = "all";
+
+    // СЧЁТЧИКИ КАТЕГОРИЙ
+    function updateCategoryCounts() {
+      const counts = {};
+
+      data.forEach(item => {
+        const cat = item.category;
+        counts[cat] = (counts[cat] || 0) + 1;
+      });
+
+      document.querySelector('[data-category="all"] .count').textContent = `(${data.length})`;
+
+      categoryButtons.forEach(btn => {
+        const cat = btn.dataset.category;
+        if (cat !== "all") {
+          const num = counts[cat] || 0;
+          btn.querySelector(".count").textContent = `(${num})`;
+        }
+      });
+    }
+
+    updateCategoryCounts();
+
+    // ФИЛЬТРАЦИЯ ПО КАТЕГОРИЯМ
+    categoryButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeCategory = btn.dataset.category;
+
+        categoryButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        applyFilters();
+      });
+    });
 
     function render(items) {
       container.innerHTML = "";
@@ -236,7 +323,6 @@
         const card = document.createElement("div");
         card.className = "card";
 
-        // --- ПРОМОКОДЫ ---
         let promoHTML = "";
 
         if (item.promo1) {
@@ -249,28 +335,7 @@
             </div>`;
         }
 
-        if (item.promo2) {
-          promoHTML += `
-            <div class="promo-block">
-              <div class="promo-code">Промокод: ${item.promo2}</div>
-              <button class="big-promo-btn" onclick="copyAndGo('${item.promo2}', '${item.link2}', this)">
-                Скопировать и перейти →
-              </button>
-            </div>`;
-        }
-
-        if (item.promo3) {
-          promoHTML += `
-            <div class="promo-block">
-              <div class="promo-code">Промокод: ${item.promo3}</div>
-              <button class="big-promo-btn" onclick="copyAndGo('${item.promo3}', '${item.link3}', this)">
-                Скопировать и перейти →
-              </button>
-            </div>`;
-        }
-
-        // Если нет ни одного промокода
-        if (!item.promo1 && !item.promo2 && !item.promo3) {
+        if (!item.promo1) {
           promoHTML = `
             <div class="promo-block">
               <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
@@ -279,7 +344,6 @@
             </div>`;
         }
 
-        // --- КАРТОЧКА ---
         card.innerHTML = `
           ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
           <h2>${item.title}</h2>
@@ -299,43 +363,28 @@
       });
     }
 
-    // Первичная отрисовка
-    render(data);
-
-    // Поиск
-    searchInput.addEventListener("input", () => {
+    function applyFilters() {
       const q = searchInput.value.toLowerCase();
-      render(data.filter(item =>
-        item.title.toLowerCase().includes(q) ||
-        (item.brand || "").toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-      ));
-    });
 
-    // Подробнее / Скрыть
-    container.addEventListener("click", (e) => {
-      const btn = e.target.closest(".toggle-description");
-      if (!btn) return;
+      const filtered = data.filter(item => {
+        const matchSearch =
+          item.title.toLowerCase().includes(q) ||
+          (item.brand || "").toLowerCase().includes(q);
 
-      const card = btn.closest(".card");
-      const text = card.querySelector(".description-text");
-      const arrow = btn.querySelector(".toggle-arrow");
+        const matchCategory =
+          activeCategory === "all" || item.category === activeCategory;
 
-      if (!text || !arrow) return;
+        return matchSearch && matchCategory;
+      });
 
-      const isOpen = text.classList.toggle("open");
+      render(filtered);
+    }
 
-      if (isOpen) {
-        arrow.classList.add("open");
-        btn.childNodes[0].textContent = "Скрыть ";
-      } else {
-        arrow.classList.remove("open");
-        btn.childNodes[0].textContent = "Подробнее ";
-      }
-    });
+    searchInput.addEventListener("input", applyFilters);
+
+    render(data);
   }
 
-  // Копирование промокода
   function copyAndGo(code, url, btn) {
     navigator.clipboard.writeText(code).then(() => {
       const original = btn.textContent;
@@ -353,5 +402,6 @@
 
   loadPromos();
 </script>
+
 </body>
 </html>
