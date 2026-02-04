@@ -232,6 +232,21 @@ card.dataset.category = item.category;  // теперь есть data-category
         Скопировать и перейти на сайт
       </button>
     </div>
+    <div class="promo-buttons">
+
+  {{#promo1}}
+  <a href="{{link1}}" class="promo-btn">Промокод {{promo1}}</a>
+  {{/promo1}}
+
+  {{#promo2}}
+  <a href="{{link2}}" class="promo-btn">Промокод {{promo2}}</a>
+  {{/promo2}}
+
+  {{#promo3}}
+  <a href="{{link3}}" class="promo-btn">Промокод {{promo3}}</a>
+  {{/promo3}}
+
+</div>
   ` : ""}
 
   <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
