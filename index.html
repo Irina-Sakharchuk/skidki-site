@@ -99,6 +99,25 @@
       overflow: hidden;
       transition: max-height 0.3s ease;
     }
+/* Убираем лишние отступы внутри описания */
+.description-text p,
+.description-text ul,
+.description-text li,
+.description-text h1,
+.description-text h2,
+.description-text h3,
+.description-text h4,
+.description-text h5,
+.description-text h6 {
+  margin: 0 0 8px 0;
+  padding: 0;
+}
+
+/* Красивые списки */
+.description-text ul {
+  padding-left: 18px;
+  margin-bottom: 8px;
+}
 
     .description-text.open {
       max-height: none !important;
