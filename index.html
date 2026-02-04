@@ -236,6 +236,20 @@
 
         container.appendChild(card);
       });
+// После рендера навешиваем обработчики
+document.querySelectorAll(".toggle-description").forEach(btn => {
+  btn.onclick = () => {
+    const text = btn.previousElementSibling;
+
+    if (text.style.maxHeight === "none") {
+      text.style.maxHeight = "70px";
+      btn.textContent = "Подробнее ⌄";
+    } else {
+      text.style.maxHeight = "none";
+      btn.textContent = "Скрыть ⌃";
+    }
+  };
+});
 
       document.querySelectorAll(".toggle-description").forEach(btn => {
         btn.addEventListener("click", () => {
