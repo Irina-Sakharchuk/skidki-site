@@ -162,33 +162,53 @@
     const searchInput = document.getElementById("search");
     const categoryButtons = document.querySelectorAll('.category-btn');
 
-    function render(items) {
-      container.innerHTML = "";
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card offer";
-        card.dataset.category = item.category;
+   function render(items) {
+  container.innerHTML = "";
 
-        card.innerHTML = `
-          ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
-          <h2 style="margin-top: 0;">${item.title}</h2>
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card offer";
+    card.dataset.category = item.category;
 
-          <div class="promo-buttons">
-            ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
-            ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
-            ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
-          </div>
+    // Автоформатирование описания
+    let formattedDescription = item.description
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")   // жирный текст
+      .replace(/•\s?(.*)/g, "<li>$1</li>")                // списки
+      .replace(/\n{2,}/g, "</p><p>")                      // абзацы
+      .replace(/\n/g, "<br>");                            // переносы строк
 
-          <p>${item.description}</p>
-
-          <p style="color: #6b7280; font-size: 0.9em; margin-top: 8px;">
-            Категория: ${item.category}
-          </p>
-        `;
-
-        container.appendChild(card);
-      });
+    // Если есть <li>, оборачиваем в <ul>
+    if (formattedDescription.includes("<li>")) {
+      formattedDescription = formattedDescription.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
     }
+
+    card.innerHTML = `
+      ${item.image ? `
+        <img src="${item.image}" alt="${item.title}">
+      ` : ""}
+
+      <h2 style="margin-top: 0; margin-bottom: 10px;">
+        ${item.title}
+      </h2>
+
+      <div class="promo-buttons">
+        ${item.promo1 ? `<a href="${item.link1}" class="promo-btn">Промокод ${item.promo1}</a>` : ""}
+        ${item.promo2 ? `<a href="${item.link2}" class="promo-btn">Промокод ${item.promo2}</a>` : ""}
+        ${item.promo3 ? `<a href="${item.link3}" class="promo-btn">Промокод ${item.promo3}</a>` : ""}
+      </div>
+
+      <p style="margin-top: 10px;">
+        ${formattedDescription}
+      </p>
+
+      <p style="color: #6b7280; font-size: 0.9em; margin-top: 12px;">
+        Категория: ${item.category}
+      </p>
+    `;
+
+    container.appendChild(card);
+  });
+}
 
     // начальный рендер
     render(data);
