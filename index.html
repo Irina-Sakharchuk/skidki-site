@@ -314,7 +314,60 @@ gtag('config', 'G-M0XNEREVVQ');
 <script>
 
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
+function formatDescription(text){
 
+if(!text) return "";
+
+if(/<[a-z][\s\S]*>/i.test(text)) return text;
+
+text=text.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>");
+
+if(/•/.test(text)){
+
+const lines=text.split("\n");
+let inList=false;
+let result="";
+
+lines.forEach(line=>{
+
+if(line.trim().startsWith("•")){
+
+if(!inList){
+result+="<ul>";
+inList=true;
+}
+
+result+=`<li>${line.replace("•","").trim()}</li>`;
+
+}
+
+else{
+
+if(inList){
+result+="</ul>";
+inList=false;
+}
+
+if(line.trim()!==""){
+result+=`<p>${line.trim()}</p>`;
+}
+
+}
+
+});
+
+if(inList) result+="</ul>";
+
+return result;
+
+}
+
+return text
+.split(/\n{2,}/)
+.map(p=>`<p>${p.trim().replace(/\n/g,"<br>")}</p>`)
+.join("");
+
+}
 async function loadPromos(){
 
 const res = await fetch(SHEET_URL);
