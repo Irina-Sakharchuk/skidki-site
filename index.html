@@ -277,18 +277,18 @@
 
 <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px;">
 
-<a href="#" class="brand-link">Яндекс Маркет</a>
-<a href="#" class="brand-link">Kari</a>
-<a href="#" class="brand-link">Befree</a>
-<a href="#" class="brand-link">ROSTIC'S</a>
-<a href="#" class="brand-link">Т-Банк</a>
-<a href="#" class="brand-link">VK Музыка</a>
-<a href="#" class="brand-link">PREMIER</a>
-<a href="#" class="brand-link">Start</a>
-<a href="#" class="brand-link">Смотрёшка</a>
-<a href="#" class="brand-link">Spirit Fitness</a>
-<a href="#" class="brand-link">Бетховен</a>
-<a href="#" class="brand-link">Авито Путешествия</a>
+<a href="?brand=Яндекс Маркет" class="brand-link">Яндекс Маркет</a>
+<a href="?brand=Kari" class="brand-link">Kari</a>
+<a href="?brand=Befree" class="brand-link">Befree</a>
+<a href="?brand=ROSTIC'S" class="brand-link">ROSTIC'S</a>
+<a href="?brand=Т-Банк" class="brand-link">Т-Банк</a>
+<a href="?brand=VK Музыка" class="brand-link">VK Музыка</a>
+<a href="?brand=PREMIER" class="brand-link">PREMIER</a>
+<a href="?brand=Start" class="brand-link">Start</a>
+<a href="?brand=Смотрёшка" class="brand-link">Смотрёшка</a>
+<a href="?brand=Spirit Fitness" class="brand-link">Spirit Fitness</a>
+<a href="?brand=Бетховен" class="brand-link">Бетховен</a>
+<a href="?brand=Авито Путешествия" class="brand-link">Авито Путешествия</a>
 
 </div>
 </section>
@@ -471,25 +471,37 @@ if (!item.promo1 && !item.promo2 && !item.promo3) {
       });
     }
 
-    function applyFilters() {
-      const q = searchInput.value.toLowerCase();
+   function applyFilters() {
+  const q = searchInput.value.toLowerCase();
 
-      const filtered = data.filter(item => {
-        const matchSearch =
-          item.title.toLowerCase().includes(q) ||
-          (item.brand || "").toLowerCase().includes(q);
+  const urlParams = new URLSearchParams(window.location.search);
+  const brandParam = urlParams.get("brand");
 
-        const matchCategory =
-          activeCategory === "all" || item.category === activeCategory;
+  const filtered = data.filter(item => {
 
-        return matchSearch && matchCategory;
-      });
+    const matchSearch =
+      item.title.toLowerCase().includes(q) ||
+      (item.brand || "").toLowerCase().includes(q);
 
-      render(filtered);
-    }
+    const matchCategory =
+      activeCategory === "all" || item.category === activeCategory;
 
+    const matchBrand =
+      !brandParam || item.brand === brandParam;
+
+    return matchSearch && matchCategory && matchBrand;
+  });
+
+  render(filtered);
+}
     searchInput.addEventListener("input", applyFilters);
+const urlParams = new URLSearchParams(window.location.search);
+const brandParam = urlParams.get("brand");
 
+if (brandParam) {
+  document.querySelector("h1").textContent =
+  "Промокоды и скидки " + brandParam;
+}
     render(data);
   }
 
