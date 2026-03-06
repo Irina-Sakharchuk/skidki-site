@@ -497,7 +497,7 @@ if (!item.promo1 && !item.promo2 && !item.promo3) {
       activeCategory === "all" || item.category === activeCategory;
 
     const matchBrand =
-      !brandParam || item.brand === brandParam;
+  !brandParam || (item.brand || "").toLowerCase().includes(brandParam.toLowerCase());
 
     return matchSearch && matchCategory && matchBrand;
   });
