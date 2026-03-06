@@ -422,9 +422,32 @@ const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
         categoryButtons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
-        applyFilters();
-      });
-    });
+        function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const brandParam = urlParams.get("brand");
+
+  const filtered = data.filter(item => {
+
+    const brand = (item.brand || "").toLowerCase();
+    const brandFilter = (brandParam || "").toLowerCase();
+
+    const matchSearch =
+      item.title.toLowerCase().includes(q) ||
+      brand.includes(q);
+
+    const matchCategory =
+      activeCategory === "all" || item.category === activeCategory;
+
+    const matchBrand =
+      !brandFilter || brand.includes(brandFilter);
+
+    return matchSearch && matchCategory && matchBrand;
+  });
+
+  render(filtered);
+}
 
     function render(items) {
       container.innerHTML = "";
