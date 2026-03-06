@@ -211,6 +211,14 @@ gtag('config', 'G-M0XNEREVVQ');
 .brand-link:hover {
   background:#ffec9a;
 }
+   #reset-filters{
+background:#ffe4e6;
+border-color:#fca5a5;
+}
+
+#reset-filters:hover{
+background:#fecaca;
+}
   </style>
   
 
@@ -585,7 +593,21 @@ applyFilters();
 });
 
 });
+if(resetBtn){
+resetBtn.addEventListener("click",()=>{
 
+activeCategory="all";
+activeBrand=null;
+
+searchInput.value="";
+
+categoryButtons.forEach(b=>b.classList.remove("active"));
+document.querySelector('[data-category="all"]').classList.add("active");
+
+applyFilters();
+
+});
+}
 
 // ===== ПОИСК =====
 
