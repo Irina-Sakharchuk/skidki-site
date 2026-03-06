@@ -387,7 +387,7 @@ const data = await res.json();
 const container = document.getElementById("promo-container");
 const brandContainer = document.getElementById("brand-container");
 const searchInput = document.getElementById("search");
-const categoryButtons = document.querySelectorAll(".category-btn");
+const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
 const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
