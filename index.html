@@ -312,294 +312,295 @@ gtag('config', 'G-M0XNEREVVQ');
 </p>
 </section>
 <script>
-  const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
-  function formatDescription(text) {
-    if (!text) return "";
-    if (/<[a-z][\s\S]*>/i.test(text)) return text;
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
-    text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+async function loadPromos(){
 
-    if (/•/.test(text)) {
-      const lines = text.split("\n");
-      let inList = false;
-      let result = "";
+const res = await fetch(SHEET_URL);
+const data = await res.json();
 
-      lines.forEach(line => {
-        if (line.trim().startsWith("•")) {
-          if (!inList) {
-            result += "<ul>";
-            inList = true;
-          }
-          result += `<li>${line.replace("•", "").trim()}</li>`;
-        } else {
-          if (inList) {
-            result += "</ul>";
-            inList = false;
-          }
-          if (line.trim() !== "") {
-            result += `<p>${line.trim()}</p>`;
-          }
-        }
-      });
-
-      if (inList) result += "</ul>";
-      return result;
-    }
-
-    return text
-      .split(/\n{2,}/)
-      .map(p => `<p>${p.trim().replace(/\n/g, "<br>")}</p>`)
-      .join("");
-  }
-
-  async function loadPromos() {
-    const res = await fetch(SHEET_URL);
-    const data = await res.json();
-   // создаем список уникальных брендов
-const brands = [...new Set(data.map(item => item.brand || item.Brand).filter(Boolean))];
-
-// контейнер для кнопок
+const container = document.getElementById("promo-container");
 const brandContainer = document.getElementById("brand-container");
+const searchInput = document.getElementById("search");
+const categoryButtons = document.querySelectorAll(".category-btn");
 
-if (brandContainer) {
+let activeCategory = "all";
 
-  const brands = [...new Set(data.map(item => item.brand || item.Brand).filter(Boolean))];
 
-  brands.forEach(brand => {
-    const a = document.createElement("a");
-    a.href = "?brand=" + encodeURIComponent(brand);
-    a.className = "brand-link";
-    a.textContent = brand;
-    brandContainer.appendChild(a);
-  });
+// ===== БРЕНДЫ =====
 
-}
-
-// создаем кнопки
-brands.forEach(brand => {
-  const a = document.createElement("a");
-  a.href = "?brand=" + encodeURIComponent(brand);
-  a.className = "brand-link";
-  a.textContent = brand;
-  brandContainer.appendChild(a);
-});
-// собираем уникальные бренды
 const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
-    const container = document.getElementById("promo-container");
-    const searchInput = document.getElementById("search");
-    const categoryButtons = document.querySelectorAll(".category-btn");
 
-    let activeCategory = "all";
+if(brandContainer){
 
-    // СЧЁТЧИКИ КАТЕГОРИЙ
-    function updateCategoryCounts() {
-      const counts = {};
+brands.forEach(brand=>{
 
-      data.forEach(item => {
-        const cat = item.category;
-        counts[cat] = (counts[cat] || 0) + 1;
-      });
+const a=document.createElement("a");
 
-      document.querySelector('[data-category="all"] .count').textContent = `(${data.length})`;
+a.href="?brand="+encodeURIComponent(brand);
+a.className="brand-link";
+a.textContent=brand;
 
-      categoryButtons.forEach(btn => {
-        const cat = btn.dataset.category;
-        if (cat !== "all") {
-          const num = counts[cat] || 0;
-          btn.querySelector(".count").textContent = `(${num})`;
-        }
-      });
-    }
+brandContainer.appendChild(a);
 
-    updateCategoryCounts();
+});
 
-    // ФИЛЬТРАЦИЯ ПО КАТЕГОРИЯМ
-    categoryButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        activeCategory = btn.dataset.category;
-
-        categoryButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        function applyFilters() {
-  const q = searchInput.value.toLowerCase();
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const brandParam = urlParams.get("brand");
-
-  const filtered = data.filter(item => {
-
-    const brand = (item.brand || "").toLowerCase();
-    const brandFilter = (brandParam || "").toLowerCase();
-
-    const matchSearch =
-      item.title.toLowerCase().includes(q) ||
-      brand.includes(q);
-
-    const matchCategory =
-      activeCategory === "all" || item.category === activeCategory;
-
-    const matchBrand =
-      !brandFilter || brand.includes(brandFilter);
-
-    return matchSearch && matchCategory && matchBrand;
-  });
-
-  render(filtered);
 }
 
-    function render(items) {
-      container.innerHTML = "";
 
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
+// ===== SEO ссылки =====
 
-       let promoHTML = "";
+const seoLinks=document.createElement("div");
+seoLinks.style.display="none";
 
-// Промокод 1
-if (item.promo1) {
-  promoHTML += `
-    <div class="promo-block">
-      <div class="promo-code">Промокод: ${item.promo1}</div>
-      <button class="big-promo-btn" onclick="copyAndGo('${item.promo1}', '${item.link1}', this)">
-        Скопировать и перейти →
-      </button>
-    </div>`;
-}
+brands.forEach(brand=>{
 
-// Промокод 2
-if (item.promo2) {
-  promoHTML += `
-    <div class="promo-block">
-      <div class="promo-code">Промокод: ${item.promo2}</div>
-      <button class="big-promo-btn" onclick="copyAndGo('${item.promo2}', '${item.link2}', this)">
-        Скопировать и перейти →
-      </button>
-    </div>`;
-}
+const a=document.createElement("a");
 
-// Промокод 3
-if (item.promo3) {
-  promoHTML += `
-    <div class="promo-block">
-      <div class="promo-code">Промокод: ${item.promo3}</div>
-      <button class="big-promo-btn" onclick="copyAndGo('${item.promo3}', '${item.link3}', this)">
-        Скопировать и перейти →
-      </button>
-    </div>`;
-}
+a.href="?brand="+encodeURIComponent(brand);
+a.textContent="Промокоды "+brand;
 
-// Если нет ни одного промокода
-if (!item.promo1 && !item.promo2 && !item.promo3) {
-  promoHTML = `
-    <div class="promo-block">
-      <button class="big-promo-btn" onclick="window.open('${item.link1}', '_blank')">
-        Переходи по ссылке →
-      </button>
-    </div>`;
-}
-        card.innerHTML = `
-          ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
-          <h2>${item.title}</h2>
+seoLinks.appendChild(a);
 
-          ${promoHTML}
-
-          <div class="description-wrapper">
-            <div class="description-text">${formatDescription(item.description)}</div>
-            <button class="toggle-description">
-              Подробнее
-              <span class="toggle-arrow">⌄</span>
-            </button>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-   function applyFilters() {
-  const q = searchInput.value.toLowerCase();
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const brandParam = urlParams.get("brand");
-
-  const filtered = data.filter(item => {
-
-    const matchSearch =
-      item.title.toLowerCase().includes(q) ||
-      (item.brand || "").toLowerCase().includes(q);
-
-    const matchCategory =
-      activeCategory === "all" || item.category === activeCategory;
-
-    const matchBrand =
-  !brandParam || (item.brand || "").toLowerCase().includes(brandParam.toLowerCase());
-
-    return matchSearch && matchCategory && matchBrand;
-  });
-
-  render(filtered);
-}
-    searchInput.addEventListener("input", applyFilters);
-const urlParams = new URLSearchParams(window.location.search);
-const brandParam = urlParams.get("brand");
-
-if (brandParam) {
-  document.querySelector("h1").textContent =
-  "Промокоды и скидки " + brandParam;
-}
-    // создаем скрытые SEO ссылки для всех брендов
-const seoLinks = document.createElement("div");
-seoLinks.style.display = "none";
-
-brands.forEach(brand => {
-  const a = document.createElement("a");
-  a.href = "?brand=" + encodeURIComponent(brand);
-  a.textContent = "Промокоды " + brand;
-  seoLinks.appendChild(a);
 });
 
 document.body.appendChild(seoLinks);
-    render(data);
-  }
 
-  function copyAndGo(code, url, btn) {
-    navigator.clipboard.writeText(code).then(() => {
-      const original = btn.textContent;
-      btn.textContent = "✓ Скопировано";
-      btn.style.background = "#16a34a";
 
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.style.background = "#ffcc00";
-      }, 1000);
+// ===== СЧЕТЧИК КАТЕГОРИЙ =====
 
-      window.open(url, "_blank");
-    });
-  }
-// Открытие / закрытие описания
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".toggle-description");
-  if (!btn) return;
+function updateCategoryCounts(){
 
-  const card = btn.closest(".card");
-  const text = card.querySelector(".description-text");
-  const arrow = btn.querySelector(".toggle-arrow");
+const counts={};
 
-  const isOpen = text.classList.toggle("open");
+data.forEach(item=>{
 
-  if (isOpen) {
-    arrow.classList.add("open");
-    btn.childNodes[0].textContent = "Скрыть ";
-  } else {
-    arrow.classList.remove("open");
-    btn.childNodes[0].textContent = "Подробнее ";
-  }
+const cat=item.category;
+counts[cat]=(counts[cat]||0)+1;
+
 });
 
-  loadPromos();
+document.querySelector('[data-category="all"] .count').textContent=`(${data.length})`;
+
+categoryButtons.forEach(btn=>{
+
+const cat=btn.dataset.category;
+
+if(cat!=="all"){
+
+const num=counts[cat]||0;
+btn.querySelector(".count").textContent=`(${num})`;
+
+}
+
+});
+
+}
+
+updateCategoryCounts();
+
+
+// ===== RENDER =====
+
+function render(items){
+
+container.innerHTML="";
+
+items.forEach(item=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+let promoHTML="";
+
+if(item.promo1){
+promoHTML+=`
+<div class="promo-block">
+<div class="promo-code">Промокод: ${item.promo1}</div>
+<button class="big-promo-btn" onclick="copyAndGo('${item.promo1}','${item.link1}',this)">
+Скопировать и перейти →
+</button>
+</div>`;
+}
+
+if(item.promo2){
+promoHTML+=`
+<div class="promo-block">
+<div class="promo-code">Промокод: ${item.promo2}</div>
+<button class="big-promo-btn" onclick="copyAndGo('${item.promo2}','${item.link2}',this)">
+Скопировать и перейти →
+</button>
+</div>`;
+}
+
+if(item.promo3){
+promoHTML+=`
+<div class="promo-block">
+<div class="promo-code">Промокод: ${item.promo3}</div>
+<button class="big-promo-btn" onclick="copyAndGo('${item.promo3}','${item.link3}',this)">
+Скопировать и перейти →
+</button>
+</div>`;
+}
+
+if(!item.promo1 && !item.promo2 && !item.promo3){
+
+promoHTML=`
+<div class="promo-block">
+<button class="big-promo-btn" onclick="window.open('${item.link1}','_blank')">
+Переходи по ссылке →
+</button>
+</div>`;
+
+}
+
+card.innerHTML=`
+${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+<h2>${item.title}</h2>
+
+${promoHTML}
+
+<div class="description-wrapper">
+<div class="description-text">${formatDescription(item.description)}</div>
+<button class="toggle-description">
+Подробнее
+<span class="toggle-arrow">⌄</span>
+</button>
+</div>
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+
+// ===== ФИЛЬТР =====
+
+function applyFilters(){
+
+const q=searchInput.value.toLowerCase();
+
+const urlParams=new URLSearchParams(window.location.search);
+const brandParam=urlParams.get("brand");
+
+const filtered=data.filter(item=>{
+
+const matchSearch=
+item.title.toLowerCase().includes(q)||
+(item.brand||"").toLowerCase().includes(q);
+
+const matchCategory=
+activeCategory==="all"||item.category===activeCategory;
+
+const matchBrand=
+!brandParam||
+(item.brand||"").toLowerCase().includes(brandParam.toLowerCase());
+
+return matchSearch && matchCategory && matchBrand;
+
+});
+
+render(filtered);
+
+}
+
+
+// ===== КАТЕГОРИИ =====
+
+categoryButtons.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+activeCategory=btn.dataset.category;
+
+categoryButtons.forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+
+applyFilters();
+
+});
+
+});
+
+
+// ===== ПОИСК =====
+
+searchInput.addEventListener("input",applyFilters);
+
+
+// ===== SEO заголовок =====
+
+const urlParams=new URLSearchParams(window.location.search);
+const brandParam=urlParams.get("brand");
+
+if(brandParam){
+
+document.querySelector("h1").textContent="Промокоды и скидки "+brandParam;
+
+}
+
+
+// ===== ЗАПУСК =====
+
+applyFilters();
+
+}
+
+
+// ===== КОПИРОВАНИЕ =====
+
+function copyAndGo(code,url,btn){
+
+navigator.clipboard.writeText(code).then(()=>{
+
+const original=btn.textContent;
+
+btn.textContent="✓ Скопировано";
+btn.style.background="#16a34a";
+
+setTimeout(()=>{
+
+btn.textContent=original;
+btn.style.background="#ffcc00";
+
+},1000);
+
+window.open(url,"_blank");
+
+});
+
+}
+
+
+// ===== ОПИСАНИЕ =====
+
+document.addEventListener("click",(e)=>{
+
+const btn=e.target.closest(".toggle-description");
+if(!btn) return;
+
+const card=btn.closest(".card");
+const text=card.querySelector(".description-text");
+const arrow=btn.querySelector(".toggle-arrow");
+
+const isOpen=text.classList.toggle("open");
+
+if(isOpen){
+arrow.classList.add("open");
+btn.childNodes[0].textContent="Скрыть ";
+}
+else{
+arrow.classList.remove("open");
+btn.childNodes[0].textContent="Подробнее ";
+}
+
+});
+
+loadPromos();
+
 </script>
 
 </body>
