@@ -360,7 +360,8 @@
   async function loadPromos() {
     const res = await fetch(SHEET_URL);
     const data = await res.json();
-
+// собираем уникальные бренды
+const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
     const container = document.getElementById("promo-container");
     const searchInput = document.getElementById("search");
     const categoryButtons = document.querySelectorAll(".category-btn");
@@ -502,6 +503,18 @@ if (brandParam) {
   document.querySelector("h1").textContent =
   "Промокоды и скидки " + brandParam;
 }
+    // создаем скрытые SEO ссылки для всех брендов
+const seoLinks = document.createElement("div");
+seoLinks.style.display = "none";
+
+brands.forEach(brand => {
+  const a = document.createElement("a");
+  a.href = "?brand=" + encodeURIComponent(brand);
+  a.textContent = "Промокоды " + brand;
+  seoLinks.appendChild(a);
+});
+
+document.body.appendChild(seoLinks);
     render(data);
   }
 
