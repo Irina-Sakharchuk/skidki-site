@@ -357,10 +357,24 @@ gtag('config', 'G-M0XNEREVVQ');
     const res = await fetch(SHEET_URL);
     const data = await res.json();
    // создаем список уникальных брендов
-const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
+const brands = [...new Set(data.map(item => item.brand || item.Brand).filter(Boolean))];
 
 // контейнер для кнопок
 const brandContainer = document.getElementById("brand-container");
+
+if (brandContainer) {
+
+  const brands = [...new Set(data.map(item => item.brand || item.Brand).filter(Boolean))];
+
+  brands.forEach(brand => {
+    const a = document.createElement("a");
+    a.href = "?brand=" + encodeURIComponent(brand);
+    a.className = "brand-link";
+    a.textContent = brand;
+    brandContainer.appendChild(a);
+  });
+
+}
 
 // создаем кнопки
 brands.forEach(brand => {
