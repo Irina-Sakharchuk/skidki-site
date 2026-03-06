@@ -284,22 +284,9 @@ gtag('config', 'G-M0XNEREVVQ');
 <section style="max-width:1000px;margin:30px auto;padding:0 20px;text-align:center;">
 <h2>Популярные магазины и сервисы</h2>
 
-<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px;">
-
-<a href="?brand=Яндекс Маркет" class="brand-link">Яндекс Маркет</a>
-<a href="?brand=Kari" class="brand-link">Kari</a>
-<a href="?brand=Befree" class="brand-link">Befree</a>
-<a href="?brand=ROSTIC'S" class="brand-link">ROSTIC'S</a>
-<a href="?brand=Т-Банк" class="brand-link">Т-Банк</a>
-<a href="?brand=VK Музыка" class="brand-link">VK Музыка</a>
-<a href="?brand=PREMIER" class="brand-link">PREMIER</a>
-<a href="?brand=Start" class="brand-link">Start</a>
-<a href="?brand=Смотрёшка" class="brand-link">Смотрёшка</a>
-<a href="?brand=Spirit Fitness" class="brand-link">Spirit Fitness</a>
-<a href="?brand=Бетховен" class="brand-link">Бетховен</a>
-<a href="?brand=Авито Путешествия" class="brand-link">Авито Путешествия</a>
-
+<div id="brand-container" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px;">
 </div>
+ 
 </section>
 <main>
   <div id="promo-container"></div>
@@ -369,6 +356,20 @@ gtag('config', 'G-M0XNEREVVQ');
   async function loadPromos() {
     const res = await fetch(SHEET_URL);
     const data = await res.json();
+   // создаем список уникальных брендов
+const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
+
+// контейнер для кнопок
+const brandContainer = document.getElementById("brand-container");
+
+// создаем кнопки
+brands.forEach(brand => {
+  const a = document.createElement("a");
+  a.href = "?brand=" + encodeURIComponent(brand);
+  a.className = "brand-link";
+  a.textContent = brand;
+  brandContainer.appendChild(a);
+});
 // собираем уникальные бренды
 const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
     const container = document.getElementById("promo-container");
