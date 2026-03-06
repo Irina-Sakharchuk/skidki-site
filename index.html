@@ -267,6 +267,9 @@ gtag('config', 'G-M0XNEREVVQ');
 
   <!-- КАТЕГОРИИ -->
   <div id="categories" class="category-grid">
+   <div style="text-align:center; margin-top:10px;">
+  <button id="reset-filters" class="category-btn">Сбросить фильтры</button>
+</div>
     <button class="category-btn" data-category="all">Все бренды <span class="count"></span></button>
     <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы <span class="count"></span></button>
     <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты <span class="count"></span></button>
@@ -377,6 +380,7 @@ const container = document.getElementById("promo-container");
 const brandContainer = document.getElementById("brand-container");
 const searchInput = document.getElementById("search");
 const categoryButtons = document.querySelectorAll(".category-btn");
+const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
 let activeBrand = null;
