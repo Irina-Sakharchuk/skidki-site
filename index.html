@@ -211,9 +211,15 @@ gtag('config', 'G-M0XNEREVVQ');
 .brand-link:hover {
   background:#ffec9a;
 }
-   #reset-filters{
+  #reset-filters{
 background:#ffe4e6;
-border-color:#fca5a5;
+border:1px solid #fca5a5;
+padding:10px 18px;
+border-radius:999px;
+cursor:pointer;
+font-weight:600;
+transition:0.2s;
+display:none;
 }
 
 #reset-filters:hover{
@@ -271,12 +277,13 @@ background:#fecaca;
 
     <input id="search" type="text" placeholder="Поиск акции..."
            style="padding:10px; border:1px solid #ccc; border-radius:6px; width:260px; margin-bottom:20px;">
-  </div>
+   <div style="margin-bottom:20px;">
+  <button id="reset-filters">↺ Сбросить фильтры</button>
+</div>
 
   <!-- КАТЕГОРИИ -->
   <div id="categories" class="category-grid">
    <div style="text-align:center; margin-top:10px;">
-  <button id="reset-filters" class="category-btn">Сбросить фильтры</button>
 </div>
     <button class="category-btn" data-category="all">Все бренды <span class="count"></span></button>
     <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы <span class="count"></span></button>
