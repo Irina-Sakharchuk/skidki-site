@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://irina-sakharchuk.github.io/skidki-site/sitemap.xml
+Sitemap: https://skidki-promo.netlify.app/sitemap.xml
