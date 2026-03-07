@@ -676,9 +676,8 @@ function copyAndGo(code,url,btn){
 
 navigator.clipboard.writeText(code).then(()=>{
 gtag('event', 'promo_click', {
-event_category:'promo',
-event_label:code,
-brand: url
+  promo_code: code,
+  link: url
 });
 
 const original=btn.textContent;
