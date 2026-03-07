@@ -658,7 +658,11 @@ applyFilters();
 function copyAndGo(code,url,btn){
 
 navigator.clipboard.writeText(code).then(()=>{
-
+gtag('event', 'promo_click', {
+  event_category: 'promo',
+  event_label: code,
+  value: 1
+});
 const original=btn.textContent;
 
 btn.textContent="✓ Скопировано";
