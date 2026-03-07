@@ -322,6 +322,24 @@ max-width:420px;
 <script>
 
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
+const GA_MEASUREMENT_ID = "G-M0XNEREVVQ";
+
+function trackEvent(name, params = {}){
+if(typeof window.gtag !== "function") return;
+window.gtag("event", name, {
+send_to: GA_MEASUREMENT_ID,
+transport_type: "beacon",
+...params
+});
+}
+
+function escapeHtmlAttr(value){
+return String(value ?? "")
+.replace(/&/g, "&amp;")
+.replace(/"/g, "&quot;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;");
+}
 function formatDescription(text){
 
 if(!text) return "";
@@ -414,6 +432,11 @@ const a=document.createElement("a");
 a.className="brand-link";
 a.textContent=brand;
 a.href="?brand="+encodeURIComponent(brand);
+a.addEventListener("click", ()=>{
+trackEvent("brand_click", {
+brand: brand
+});
+});
 
 brandContainer.appendChild(a);
 
@@ -438,7 +461,7 @@ const a=document.createElement("a");
 
 a.href="?brand="+encodeURIComponent(brand);
 a.addEventListener("click", ()=>{
-gtag('event','brand_click',{
+trackEvent("brand_click", {
 brand: brand
 });
 });
@@ -502,7 +525,7 @@ if(item.promo1){
 promoHTML+=`
 <div class="promo-block">
 <div class="promo-code">Промокод: ${item.promo1}</div>
-<button class="big-promo-btn" onclick="copyAndGo('${item.promo1}','${item.link1}',this)">
+<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo1)}" data-url="${escapeHtmlAttr(item.link1)}">
 Скопировать и перейти →
 </button>
 </div>`;
@@ -512,7 +535,7 @@ if(item.promo2){
 promoHTML+=`
 <div class="promo-block">
 <div class="promo-code">Промокод: ${item.promo2}</div>
-<button class="big-promo-btn" onclick="copyAndGo('${item.promo2}','${item.link2}',this)">
+<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo2)}" data-url="${escapeHtmlAttr(item.link2)}">
 Скопировать и перейти →
 </button>
 </div>`;
@@ -522,7 +545,7 @@ if(item.promo3){
 promoHTML+=`
 <div class="promo-block">
 <div class="promo-code">Промокод: ${item.promo3}</div>
-<button class="big-promo-btn" onclick="copyAndGo('${item.promo3}','${item.link3}',this)">
+<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo3)}" data-url="${escapeHtmlAttr(item.link3)}">
 Скопировать и перейти →
 </button>
 </div>`;
@@ -532,7 +555,7 @@ if(!item.promo1 && !item.promo2 && !item.promo3){
 
 promoHTML=`
 <div class="promo-block">
-<button class="big-promo-btn" onclick="window.open('${item.link1}','_blank')">
+<button class="big-promo-btn direct-link-btn" data-url="${escapeHtmlAttr(item.link1)}">
 Переходи по ссылке →
 </button>
 </div>`;
@@ -634,7 +657,7 @@ searchInput.addEventListener("input",()=>{
 
 applyFilters();
 
-gtag('event','search',{
+trackEvent("search", {
 search_term:searchInput.value
 });
 
@@ -650,12 +673,28 @@ document.title = "Промокоды " + brandParam + " — акции и ски
 
 let metaDesc = document.querySelector('meta[name="description"]');
 
-if(metaDesc){
+if(!metaDesc){
+metaDesc = document.createElement("meta");
+metaDesc.setAttribute("name","description");
+document.head.appendChild(metaDesc);
+}
+
 metaDesc.setAttribute(
 "content",
 "Свежие промокоды, скидки и акции " + brandParam + ". Актуальные предложения и купоны для экономии на покупках."
 );
+
+let canonical = document.querySelector('link[rel="canonical"]');
+
+if(!canonical){
+canonical = document.createElement("link");
+canonical.setAttribute("rel","canonical");
+document.head.appendChild(canonical);
 }
+
+const canonicalUrl = new URL(window.location.href);
+canonicalUrl.search = "?brand=" + encodeURIComponent(brandParam);
+canonical.setAttribute("href", canonicalUrl.toString());
 
 activeBrand = brandParam;
 
@@ -673,10 +712,9 @@ applyFilters();
 
 function copyAndGo(code,url,btn){
 
-navigator.clipboard.writeText(code).then(()=>{
-gtag('event', 'promo_click', {
-  promo_code: code,
-  link: url
+trackEvent("promo_click", {
+promo_code:code,
+link:url
 });
 
 const original=btn.textContent;
@@ -691,14 +729,39 @@ btn.style.background="#ffcc00";
 
 },1000);
 
-window.open(url,"_blank");
+if(navigator.clipboard && window.isSecureContext){
+navigator.clipboard.writeText(code).catch(()=>{});
+}
 
-});
+if(url){
+window.open(url,"_blank","noopener,noreferrer");
+}
 
 }
 
 
 // ===== ОПИСАНИЕ =====
+
+document.addEventListener("click",(e)=>{
+
+const copyBtn=e.target.closest(".copy-btn");
+if(copyBtn){
+copyAndGo(copyBtn.dataset.code || "", copyBtn.dataset.url || "", copyBtn);
+return;
+}
+
+const directBtn=e.target.closest(".direct-link-btn");
+if(directBtn){
+const url=directBtn.dataset.url || "";
+if(url){
+trackEvent("outbound_click", {
+link:url
+});
+window.open(url,"_blank","noopener,noreferrer");
+}
+}
+
+});
 
 document.addEventListener("click",(e)=>{
 
