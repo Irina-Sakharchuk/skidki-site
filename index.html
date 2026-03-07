@@ -630,7 +630,15 @@ applyFilters();
 
 // ===== ПОИСК =====
 
-searchInput.addEventListener("input",applyFilters);
+searchInput.addEventListener("input",()=>{
+
+applyFilters();
+
+gtag('event','search',{
+search_term:searchInput.value
+});
+
+});
 
 
 // ===== SEO заголовок =====
