@@ -409,7 +409,12 @@ const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
 let activeBrand = null;
+const urlParams = new URLSearchParams(window.location.search);
+const brandParam = urlParams.get("brand");
 
+if (brandParam) {
+  activeBrand = brandParam;
+}
 
 // ===== БРЕНДЫ =====
 
