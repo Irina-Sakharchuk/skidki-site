@@ -158,19 +158,6 @@ gtag('config', 'G-M0XNEREVVQ');
   margin:20px auto;
   padding:0 20px;
 }
-
-    @media (max-width: 1024px) {
-      .category-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .category-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
     .category-btn {
   padding:10px 18px;
   background:#fff7d1;
@@ -288,8 +275,6 @@ max-width:420px;
 
   <!-- КАТЕГОРИИ -->
   <div id="categories" class="category-grid">
-   <div style="text-align:center; margin-top:10px;">
-</div>
     <button class="category-btn" data-category="all">Все бренды <span class="count"></span></button>
     <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы <span class="count"></span></button>
     <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты <span class="count"></span></button>
@@ -424,19 +409,13 @@ if(brandContainer){
 
 brands.forEach(brand=>{
 
-const btn=document.createElement("button");
+const a=document.createElement("a");
 
-btn.className="brand-link";
-btn.textContent=brand;
+a.className="brand-link";
+a.textContent=brand;
+a.href="?brand="+encodeURIComponent(brand);
 
-btn.addEventListener("click",()=>{
-
-activeBrand = brand;
-
-activeBrand = null;
-applyFilters();
-
-});
+brandContainer.appendChild(a);
 
 brandContainer.appendChild(btn);
 
@@ -588,9 +567,6 @@ item.title.toLowerCase().includes(q) ||
 const matchCategory =
 activeCategory === "all" || item.category === activeCategory;
 
-const matchBrand =
-!activeBrand || item.brand === activeBrand;
-
 return matchSearch && matchCategory && matchBrand;
 
 });
@@ -652,7 +628,8 @@ const matchBrand =
 
 if(brandParam){
 
-document.querySelector("h1").textContent="Промокоды и скидки "+brandParam;
+document.querySelector("h1").textContent="Промокоды и скидки " + brandParam;
+activeBrand = brandParam;
 
 }
 
