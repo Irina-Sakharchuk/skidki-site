@@ -425,13 +425,23 @@ brandContainer.appendChild(a);
 // ===== SEO ссылки =====
 
 const seoLinks=document.createElement("div");
-seoLinks.style.display="none";
+
+seoLinks.style.maxWidth="900px";
+seoLinks.style.margin="40px auto";
+seoLinks.style.padding="0 20px";
+seoLinks.style.fontSize="0.9em";
+seoLinks.style.color="#666";
 
 brands.forEach(brand=>{
 
 const a=document.createElement("a");
 
 a.href="?brand="+encodeURIComponent(brand);
+ a.addEventListener("click",()=>{
+gtag('event','brand_click',{
+brand:brand
+});
+});
 a.textContent="Промокоды "+brand;
 
 seoLinks.appendChild(a);
@@ -484,7 +494,8 @@ items.forEach(item=>{
 
 const card=document.createElement("div");
 card.className="card";
-
+card.setAttribute("itemscope","");
+card.setAttribute("itemtype","https://schema.org/Offer");
 let promoHTML="";
 
 if(item.promo1){
@@ -530,7 +541,7 @@ promoHTML=`
 
 card.innerHTML=`
 ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
-<h2>${item.title}</h2>
+<h2 itemprop="name">${item.title}</h2>
 
 ${promoHTML}
 
@@ -626,7 +637,19 @@ searchInput.addEventListener("input",applyFilters);
 
 if(brandParam){
 
-document.querySelector("h1").textContent="Промокоды и скидки " + brandParam;
+document.querySelector("h1").textContent = "Промокоды и скидки " + brandParam;
+
+document.title = "Промокоды " + brandParam + " — акции и скидки";
+
+let metaDesc = document.querySelector('meta[name="description"]');
+
+if(metaDesc){
+metaDesc.setAttribute(
+"content",
+"Свежие промокоды, скидки и акции " + brandParam + ". Актуальные предложения и купоны для экономии на покупках."
+);
+}
+
 activeBrand = brandParam;
 
 }
@@ -645,10 +668,11 @@ function copyAndGo(code,url,btn){
 
 navigator.clipboard.writeText(code).then(()=>{
 gtag('event', 'promo_click', {
-  event_category: 'promo',
-  event_label: code,
-  value: 1
+event_category:'promo',
+event_label:code,
+brand: url
 });
+
 const original=btn.textContent;
 
 btn.textContent="✓ Скопировано";
