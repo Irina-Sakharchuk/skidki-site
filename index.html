@@ -437,9 +437,9 @@ brands.forEach(brand=>{
 const a=document.createElement("a");
 
 a.href="?brand="+encodeURIComponent(brand);
- a.addEventListener("click",()=>{
+a.addEventListener("click", ()=>{
 gtag('event','brand_click',{
-brand:brand
+brand: brand
 });
 });
 a.textContent="Промокоды "+brand;
