@@ -400,6 +400,11 @@ const container = document.getElementById("promo-container");
 const brandContainer = document.getElementById("brand-container");
 const searchInput = document.getElementById("search");
 const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
+ // активируем кнопку "Все бренды" при загрузке
+const defaultCategory = document.querySelector('[data-category="all"]');
+if(defaultCategory){
+  defaultCategory.classList.add("active");
+}
 const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
