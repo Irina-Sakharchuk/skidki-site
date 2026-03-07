@@ -5,55 +5,30 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M0XNEREVVQ"></script>
 <script>
 
-const SHEET_URL="https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZTznygwyNU6X20koSg3jplZfZpXsSl1D6Tyqc69H7LtfHSL/exec";
 
 async function loadPromos(){
 
-const res=await fetch(SHEET_URL);
-const data=await res.json();
+const res = await fetch(SHEET_URL);
+const data = await res.json();
 
-const container=document.getElementById("promo-container");
-const brandContainer=document.getElementById("brand-container");
-const searchInput=document.getElementById("search");
-const categoryButtons=document.querySelectorAll(".category-btn[data-category]");
-const resetBtn=document.getElementById("reset-filters");
+const container = document.getElementById("promo-container");
+const brandContainer = document.getElementById("brand-container");
+const searchInput = document.getElementById("search");
+const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
+const resetBtn = document.getElementById("reset-filters");
 
-let activeCategory="all";
-let activeBrand=null;
+let activeCategory = "all";
+let activeBrand = null;
 
-const urlParams=new URLSearchParams(window.location.search);
-const brandParam=urlParams.get("brand");
-
-/* SEO страницы брендов */
+const urlParams = new URLSearchParams(window.location.search);
+const brandParam = urlParams.get("brand");
 
 if(brandParam){
-
-activeBrand=decodeURIComponent(brandParam);
-
-document.title="Промокоды "+activeBrand+" 2026 — скидки и акции";
-
-const meta=document.querySelector("meta[name='description']");
-if(meta){
-meta.setAttribute("content","Все актуальные промокоды и скидки "+activeBrand+" 2026. Купоны и акции.");
+activeBrand = decodeURIComponent(brandParam);
 }
 
-const canonical=document.getElementById("canonical-link");
-if(canonical){
-canonical.href="https://irina-sakharchuk.github.io/skidki-site/?brand="+encodeURIComponent(activeBrand);
-}
-
-document.querySelector("h1").textContent="Промокоды и скидки "+activeBrand;
-
-}
-
-/* активная категория */
-
-const defaultCategory=document.querySelector('[data-category="all"]');
-if(defaultCategory) defaultCategory.classList.add("active");
-
-/* ===== бренды ===== */
-
-const brands=[...new Set(data.map(i=>i.brand).filter(b=>b&&b.trim()!==""))].sort();
+const brands = [...new Set(data.map(i => i.brand).filter(Boolean))].sort();
 
 if(brandContainer){
 
@@ -70,26 +45,6 @@ brandContainer.appendChild(a);
 });
 
 }
-
-/* скрытые SEO ссылки */
-
-const seoLinks=document.createElement("div");
-seoLinks.style.display="none";
-
-brands.forEach(brand=>{
-
-const a=document.createElement("a");
-
-a.href="?brand="+encodeURIComponent(brand);
-a.textContent="Промокоды "+brand;
-
-seoLinks.appendChild(a);
-
-});
-
-document.body.appendChild(seoLinks);
-
-/* ===== счётчики категорий ===== */
 
 function updateCategoryCounts(){
 
@@ -121,8 +76,6 @@ btn.querySelector(".count").textContent=`(${num})`;
 
 updateCategoryCounts();
 
-/* ===== render ===== */
-
 function render(items){
 
 container.innerHTML="";
@@ -146,55 +99,13 @@ promoHTML+=`
 
 }
 
-if(item.promo2){
-
-promoHTML+=`
-<div class="promo-block">
-<div class="promo-code">Промокод: ${item.promo2}</div>
-<button class="big-promo-btn" onclick="copyAndGo('${item.promo2}','${item.link2}',this)">
-Скопировать и перейти →
-</button>
-</div>`;
-
-}
-
-if(item.promo3){
-
-promoHTML+=`
-<div class="promo-block">
-<div class="promo-code">Промокод: ${item.promo3}</div>
-<button class="big-promo-btn" onclick="copyAndGo('${item.promo3}','${item.link3}',this)">
-Скопировать и перейти →
-</button>
-</div>`;
-
-}
-
-if(!item.promo1&&!item.promo2&&!item.promo3){
-
-promoHTML=`
-<div class="promo-block">
-<button class="big-promo-btn" onclick="window.open('${item.link1}','_blank')">
-Переходи по ссылке →
-</button>
-</div>`;
-
-}
-
 card.innerHTML=`
 
-${item.image?`<img loading="lazy" src="${item.image}" alt="Промокод ${item.brand} — ${item.title}">`:""}
+${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
 
 <h2>${item.title}</h2>
 
 ${promoHTML}
-
-<div class="description-wrapper">
-<div class="description-text">${formatDescription(item.description)}</div>
-<button class="toggle-description">
-Подробнее <span class="toggle-arrow">⌄</span>
-</button>
-</div>
 
 `;
 
@@ -204,43 +115,29 @@ container.appendChild(card);
 
 }
 
-/* ===== фильтры ===== */
-
 function applyFilters(){
 
-const q=searchInput.value.toLowerCase();
+const q = searchInput.value.toLowerCase();
 
-const filtered=data.filter(item=>{
+const filtered = data.filter(item=>{
 
-const matchSearch=
-item.title.toLowerCase().includes(q)||
-(item.brand||"").toLowerCase().includes(q);
+const matchSearch =
+item.title.toLowerCase().includes(q) ||
+(item.brand || "").toLowerCase().includes(q);
 
-const matchCategory=
-activeCategory==="all"||item.category===activeCategory;
+const matchCategory =
+activeCategory === "all" || item.category === activeCategory;
 
-const matchBrand=
-!activeBrand||item.brand===activeBrand;
+const matchBrand =
+!activeBrand || item.brand === activeBrand;
 
-return matchSearch&&matchCategory&&matchBrand;
+return matchSearch && matchCategory && matchBrand;
 
 });
-
-if(resetBtn){
-
-if(activeCategory!=="all"||activeBrand!==null||searchInput.value!==""){
-resetBtn.style.display="inline-block";
-}else{
-resetBtn.style.display="none";
-}
-
-}
 
 render(filtered);
 
 }
-
-/* категории */
 
 categoryButtons.forEach(btn=>{
 
@@ -257,75 +154,24 @@ applyFilters();
 
 });
 
-/* сброс */
-
-if(resetBtn){
-
-resetBtn.addEventListener("click",()=>{
-
-activeCategory="all";
-activeBrand=null;
-
-searchInput.value="";
-
-categoryButtons.forEach(b=>b.classList.remove("active"));
-document.querySelector('[data-category="all"]').classList.add("active");
-
-applyFilters();
-
-});
-
-}
-
-/* поиск */
-
 searchInput.addEventListener("input",applyFilters);
 
-/* запуск */
-
 applyFilters();
 
 }
-
-/* формат описания */
-
-function formatDescription(text){
-
-if(!text) return "";
-
-if(/<[a-z][\s\S]*>/i.test(text)) return text;
-
-text=text.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>");
-
-return text
-.split(/\n{2,}/)
-.map(p=>`<p>${p.trim().replace(/\n/g,"<br>")}</p>`)
-.join("");
-
-}
-
-/* копирование промокода */
 
 function copyAndGo(code,url,btn){
 
 navigator.clipboard.writeText(code).then(()=>{
 
-if(typeof gtag!=="undefined"){
-gtag('event','promo_click',{
-event_category:'promo',
-event_label:code,
-value:1
-});
-}
-
 const original=btn.textContent;
 
 btn.textContent="✓ Скопировано";
-btn.style.background="#16a34a";
 
 setTimeout(()=>{
+
 btn.textContent=original;
-btn.style.background="#ffcc00";
+
 },1000);
 
 window.open(url,"_blank");
@@ -333,43 +179,6 @@ window.open(url,"_blank");
 });
 
 }
-
-/* раскрытие описания */
-
-document.addEventListener("click",(e)=>{
-
-const btn=e.target.closest(".toggle-description");
-if(!btn) return;
-
-const card=btn.closest(".card");
-const text=card.querySelector(".description-text");
-const arrow=btn.querySelector(".toggle-arrow");
-
-const open=text.classList.toggle("open");
-
-if(open){
-arrow.classList.add("open");
-btn.childNodes[0].textContent="Скрыть ";
-}else{
-arrow.classList.remove("open");
-btn.childNodes[0].textContent="Подробнее ";
-}
-
-});
-
-/* schema для SEO */
-
-const schema={
-"@context":"https://schema.org",
-"@type":"ItemList",
-"name":"Промокоды интернет-магазинов",
-"url":"https://irina-sakharchuk.github.io/skidki-site/"
-};
-
-const schemaScript=document.createElement("script");
-schemaScript.type="application/ld+json";
-schemaScript.textContent=JSON.stringify(schema);
-document.head.appendChild(schemaScript);
 
 loadPromos();
 
