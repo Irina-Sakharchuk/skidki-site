@@ -333,6 +333,32 @@ transport_type: "beacon",
 });
 }
 
+function trackBrandClickAndNavigate(brand, href){
+const targetHref = href || ("?brand=" + encodeURIComponent(brand));
+
+if(typeof window.gtag !== "function"){
+window.location.href = targetHref;
+return;
+}
+
+let navigated = false;
+const goToBrandPage = () => {
+if(navigated) return;
+navigated = true;
+window.location.href = targetHref;
+};
+
+window.gtag("event", "brand_click", {
+send_to: GA_MEASUREMENT_ID,
+transport_type: "beacon",
+brand: brand,
+event_callback: goToBrandPage,
+event_timeout: 500
+});
+
+setTimeout(goToBrandPage, 250);
+}
+
 function escapeHtmlAttr(value){
 return String(value ?? "")
 .replace(/&/g, "&amp;")
@@ -432,10 +458,16 @@ const a=document.createElement("a");
 a.className="brand-link";
 a.textContent=brand;
 a.href="?brand="+encodeURIComponent(brand);
-a.addEventListener("click", ()=>{
+a.addEventListener("click", (e)=>{
+const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+if(isModifiedClick){
 trackEvent("brand_click", {
 brand: brand
 });
+return;
+}
+e.preventDefault();
+trackBrandClickAndNavigate(brand, a.href);
 });
 
 brandContainer.appendChild(a);
@@ -460,10 +492,16 @@ brands.forEach(brand=>{
 const a=document.createElement("a");
 
 a.href="?brand="+encodeURIComponent(brand);
-a.addEventListener("click", ()=>{
+a.addEventListener("click", (e)=>{
+const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+if(isModifiedClick){
 trackEvent("brand_click", {
 brand: brand
 });
+return;
+}
+e.preventDefault();
+trackBrandClickAndNavigate(brand, a.href);
 });
 a.textContent="Промокоды "+brand;
 
