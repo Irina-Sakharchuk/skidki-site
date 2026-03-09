@@ -189,13 +189,11 @@ gtag('config', 'G-M0XNEREVVQ');
     }
 
     .description-text {
-      max-height: 70px;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
+      display: none;
     }
 
     .description-text.open {
-      max-height: none !important;
+      display: block;
     }
 
     .description-text p,
@@ -1119,11 +1117,11 @@ ${hotMeta}
 ${promoHTML}
 
 <div class="description-wrapper">
-<div class="description-text">${formatDescription(item.description)}</div>
 <button class="toggle-description">
 Подробнее
 <span class="toggle-arrow">⌄</span>
 </button>
+<div class="description-text">${formatDescription(item.description)}</div>
 </div>
 `;
 
