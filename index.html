@@ -240,6 +240,31 @@ gtag('config', 'G-M0XNEREVVQ');
   margin:20px auto;
   padding:0 20px;
 }
+
+    #category-mobile-picker{
+  display:none;
+  max-width:420px;
+  margin:0 auto 16px;
+  text-align:left;
+}
+
+    #category-mobile-picker label{
+  display:block;
+  margin:0 0 6px 2px;
+  font-size:0.85rem;
+  color:#6b7280;
+  font-weight:600;
+}
+
+    #category-mobile-select{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  font-size:0.95rem;
+  background:#fff;
+  color:#111827;
+}
     .category-btn {
   padding:10px 18px;
   background:#fff7d1;
@@ -331,6 +356,12 @@ gtag('config', 'G-M0XNEREVVQ');
 }
 
     @media (max-width: 767px){
+  .category-grid{
+    display:none;
+  }
+  #category-mobile-picker{
+    display:block;
+  }
   #brand-container{
     display:none !important;
   }
@@ -468,6 +499,11 @@ max-width:420px;
 	  <button id="hot-only-toggle" class="filter-btn" type="button">Только горящие</button>
 	  <button id="reset-filters">↺ Сбросить фильтры</button>
 	</div>
+
+  <div id="category-mobile-picker">
+    <label for="category-mobile-select">Выбери категорию</label>
+    <select id="category-mobile-select"></select>
+  </div>
 
   <!-- КАТЕГОРИИ -->
   <div id="categories" class="category-grid">
@@ -916,6 +952,7 @@ const container = document.getElementById("promo-container");
 const hotSection = document.getElementById("hot-section");
 const hotContainer = document.getElementById("hot-promo-container");
 const brandContainer = document.getElementById("brand-container");
+const categoryMobileSelect = document.getElementById("category-mobile-select");
 const mobileBrandSelect = document.getElementById("brand-mobile-select");
 const searchInput = document.getElementById("search");
 const hotToggleBtn = document.getElementById("hot-only-toggle");
@@ -992,6 +1029,19 @@ mobileBrandSelect.appendChild(option);
 });
 
 mobileBrandSelect.value = activeBrand || "";
+}
+
+if(categoryMobileSelect){
+categoryMobileSelect.innerHTML = "";
+categoryButtons.forEach(btn=>{
+const category = btn.dataset.category;
+if(!category) return;
+const option = document.createElement("option");
+option.value = category;
+option.textContent = category === "all" ? "Все бренды" : category;
+categoryMobileSelect.appendChild(option);
+});
+categoryMobileSelect.value = activeCategory;
 }
 
 if(brandContainer){
@@ -1312,6 +1362,9 @@ categoryButtons.forEach(btn=>{
 btn.addEventListener("click",()=>{
 
 activeCategory=btn.dataset.category;
+if(categoryMobileSelect){
+categoryMobileSelect.value = activeCategory;
+}
 
 categoryButtons.forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
@@ -1333,6 +1386,9 @@ syncFilterParamsInUrl();
 searchInput.value="";
 if(mobileBrandSelect){
 mobileBrandSelect.value = "";
+}
+if(categoryMobileSelect){
+categoryMobileSelect.value = "all";
 }
 
 categoryButtons.forEach(b=>b.classList.remove("active"));
@@ -1364,6 +1420,18 @@ brand: activeBrand
 });
 }
 syncFilterParamsInUrl();
+applyFilters();
+});
+}
+
+if(categoryMobileSelect){
+categoryMobileSelect.addEventListener("change", ()=>{
+activeCategory = categoryMobileSelect.value || "all";
+categoryButtons.forEach(b=>b.classList.remove("active"));
+const activeCategoryBtn = Array.from(categoryButtons).find(b=>b.dataset.category === activeCategory);
+if(activeCategoryBtn){
+activeCategoryBtn.classList.add("active");
+}
 applyFilters();
 });
 }
