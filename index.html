@@ -93,6 +93,9 @@ gtag('config', 'G-M0XNEREVVQ');
       max-width: 320px;
       transition: 0.3s ease;
       align-self: start;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
 
     .card:hover {
@@ -154,14 +157,24 @@ gtag('config', 'G-M0XNEREVVQ');
       height: 120px;
       object-fit: cover;
       border-radius: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
+    }
+
+    .card-title{
+      margin:0;
+      font-size:1em;
+      line-height:1.2;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:4;
+      overflow:hidden;
     }
 
     .promo-block {
       background: #fff7e0;
       padding: 12px;
       border-radius: 12px;
-      margin: 10px 0;
+      margin: 4px 0;
       border-left: 4px solid #ffcc00;
     }
 
@@ -192,7 +205,7 @@ gtag('config', 'G-M0XNEREVVQ');
     }
 
     .description-wrapper {
-      margin-top: 10px;
+      margin-top: 4px;
     }
 
     .description-text {
@@ -1234,7 +1247,7 @@ ${expiresDate ? `<div class="hot-deadline">Действует до ${formatMosco
 card.innerHTML=`
 ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
 ${hotMeta}
-<h2 itemprop="name">${item.title}</h2>
+<h2 class="card-title" itemprop="name" title="${escapeHtmlAttr(item.title)}">${item.title}</h2>
 
 ${promoHTML}
 
