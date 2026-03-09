@@ -416,6 +416,139 @@ upsertMetaByProperty("og:url", canonicalUrl.toString());
 
 applyBrandSeo(brandParam);
 
+function normalizeBrand(value){
+return String(value || "").trim().toLowerCase();
+}
+
+function cleanText(value, maxLength = 220){
+const text = String(value || "").replace(/\s+/g, " ").trim();
+return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text;
+}
+
+function toAbsoluteUrl(value){
+if(!value) return "";
+try{
+return new URL(value, window.location.origin).toString();
+}catch{
+return "";
+}
+}
+
+function upsertJsonLdById(id, payload){
+let scriptTag = document.getElementById(id);
+if(!scriptTag){
+scriptTag = document.createElement("script");
+scriptTag.type = "application/ld+json";
+scriptTag.id = id;
+document.head.appendChild(scriptTag);
+}
+scriptTag.textContent = JSON.stringify(payload);
+}
+
+function updateBrandPreviewMeta(data, brand){
+if(!brand) return;
+
+const normalizedBrand = normalizeBrand(brand);
+const brandItemWithImage = data.find(item=>
+normalizeBrand(item.brand) === normalizedBrand && item.image
+);
+
+const imageUrl = toAbsoluteUrl(
+brandItemWithImage?.image || "https://skidki-promo.netlify.app/logo.jpg"
+);
+
+if(imageUrl){
+upsertMetaByProperty("og:image", imageUrl);
+upsertMetaByName("twitter:image", imageUrl);
+}
+}
+
+function updateDynamicSchema(data, brand){
+const canonicalHref =
+document.querySelector('link[rel="canonical"]')?.getAttribute("href") ||
+window.location.href;
+
+const normalizedBrand = normalizeBrand(brand);
+const sourceItems = normalizedBrand
+? data.filter(item=>normalizeBrand(item.brand) === normalizedBrand)
+: data;
+const limitedItems = sourceItems.slice(0, 30);
+
+const pageName = brand
+? "Промокоды и скидки " + brand
+: "Лучшие промокоды и скидки 2026";
+
+const pageDescription = brand
+? "Актуальные акции, купоны и промокоды " + brand + " на одной странице."
+: "Актуальные акции, купоны и промокоды популярных брендов на одной странице.";
+
+const graph = [];
+
+const collectionNode = {
+"@type": "CollectionPage",
+"@id": canonicalHref + "#collection",
+"url": canonicalHref,
+"name": pageName,
+"description": pageDescription,
+"inLanguage": "ru",
+"mainEntity": {
+"@id": canonicalHref + "#offers"
+}
+};
+
+if(brand){
+collectionNode.about = {
+"@id": canonicalHref + "#brand"
+};
+}
+
+graph.push(collectionNode);
+
+if(brand){
+graph.push({
+"@type": "Brand",
+"@id": canonicalHref + "#brand",
+"name": brand
+});
+}
+
+graph.push({
+"@type": "ItemList",
+"@id": canonicalHref + "#offers",
+"numberOfItems": limitedItems.length,
+"itemListElement": limitedItems.map((item, index)=>{
+const offerUrl =
+toAbsoluteUrl(item.link1 || item.link2 || item.link3 || canonicalHref) ||
+canonicalHref;
+const offer = {
+"@type": "Offer",
+"name": cleanText(item.title || ("Промокоды " + (item.brand || brand || "")), 120),
+"description": cleanText(item.description || pageDescription, 220),
+"url": offerUrl
+};
+
+const sellerName = cleanText(item.brand || brand, 80);
+if(sellerName){
+offer.seller = {
+"@type": "Brand",
+"name": sellerName
+};
+}
+
+return {
+"@type": "ListItem",
+"position": index + 1,
+"item": offer
+};
+})
+});
+
+upsertJsonLdById("dynamic-schema", {
+"@context": "https://schema.org",
+"@graph": graph
+});
+}
+
 function escapeHtmlAttr(value){
 return String(value ?? "")
 .replace(/&/g, "&amp;")
@@ -499,6 +632,9 @@ let activeBrand = brandParam || null;
 // ===== БРЕНДЫ =====
 
 const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
+
+updateBrandPreviewMeta(data, brandParam);
+updateDynamicSchema(data, brandParam);
 
 if(brandContainer){
 
