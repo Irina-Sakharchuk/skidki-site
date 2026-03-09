@@ -78,9 +78,20 @@ gtag('config', 'G-M0XNEREVVQ');
     @media (min-width: 768px) {
       #promo-container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
       }
       #hot-promo-container{
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+      }
+      .card{
+        width:100%;
+        max-width:none;
+        min-height:100%;
+        align-self:stretch;
+      }
+      .description-wrapper{
+        margin-top:auto;
       }
     }
 
@@ -176,6 +187,43 @@ gtag('config', 'G-M0XNEREVVQ');
       border-radius: 12px;
       margin: 4px 0;
       border-left: 4px solid #ffcc00;
+    }
+
+    .promo-group{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .extra-promos{
+      display:none;
+    }
+
+    .extra-promos.open{
+      display:block;
+    }
+
+    .toggle-extra-promos{
+      align-self:flex-start;
+      background:none;
+      border:none;
+      color:#9a6700;
+      font-weight:700;
+      font-size:0.92em;
+      cursor:pointer;
+      padding:2px 2px 4px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .promo-toggle-arrow{
+      display:inline-block;
+      transition:transform 0.25s ease;
+    }
+
+    .promo-toggle-arrow.open{
+      transform:rotate(180deg);
     }
 
     .promo-code {
@@ -1193,45 +1241,50 @@ card.setAttribute("itemscope","");
 card.setAttribute("itemtype","https://schema.org/Offer");
 let promoHTML="";
 
-if(item.promo1){
-promoHTML+=`
+const promoItems = [
+{ code: item.promo1, url: item.link1 },
+{ code: item.promo2, url: item.link2 },
+{ code: item.promo3, url: item.link3 }
+].filter(promo=>String(promo.code || "").trim() !== "");
+
+const renderPromoBlock = (promo)=>{
+const safeCode = escapeHtmlAttr(String(promo.code || "").trim());
+const safeUrl = escapeHtmlAttr(String(promo.url || "").trim());
+return `
 <div class="promo-block">
-<div class="promo-code">Промокод: ${item.promo1}</div>
-<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo1)}" data-url="${escapeHtmlAttr(item.link1)}">
+<div class="promo-code">Промокод: ${safeCode}</div>
+<button class="big-promo-btn copy-btn" data-code="${safeCode}" data-url="${safeUrl}">
 Скопировать и перейти →
 </button>
 </div>`;
-}
+};
 
-if(item.promo2){
-promoHTML+=`
-<div class="promo-block">
-<div class="promo-code">Промокод: ${item.promo2}</div>
-<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo2)}" data-url="${escapeHtmlAttr(item.link2)}">
-Скопировать и перейти →
+if(promoItems.length){
+const firstPromo = renderPromoBlock(promoItems[0]);
+const extraPromos = promoItems.slice(1);
+
+if(extraPromos.length){
+promoHTML = `
+<div class="promo-group">
+${firstPromo}
+<button class="toggle-extra-promos" type="button" data-extra-count="${extraPromos.length}">
+Ещё промокоды (${extraPromos.length})
+<span class="promo-toggle-arrow">⌄</span>
 </button>
+<div class="extra-promos">
+${extraPromos.map(renderPromoBlock).join("")}
+</div>
 </div>`;
+}else{
+promoHTML = firstPromo;
 }
-
-if(item.promo3){
-promoHTML+=`
-<div class="promo-block">
-<div class="promo-code">Промокод: ${item.promo3}</div>
-<button class="big-promo-btn copy-btn" data-code="${escapeHtmlAttr(item.promo3)}" data-url="${escapeHtmlAttr(item.link3)}">
-Скопировать и перейти →
-</button>
-</div>`;
-}
-
-if(!item.promo1 && !item.promo2 && !item.promo3){
-
+}else{
 promoHTML=`
 <div class="promo-block">
 <button class="big-promo-btn direct-link-btn" data-url="${escapeHtmlAttr(item.link1)}">
 Переходи по ссылке →
 </button>
 </div>`;
-
 }
 
 const hotMeta = isHot
@@ -1531,6 +1584,26 @@ window.open(url,"_blank","noopener,noreferrer");
 });
 
 document.addEventListener("click",(e)=>{
+
+const promoToggleBtn=e.target.closest(".toggle-extra-promos");
+if(promoToggleBtn){
+const card=promoToggleBtn.closest(".card");
+const extraPromos=card ? card.querySelector(".extra-promos") : null;
+if(!extraPromos) return;
+
+const arrow=promoToggleBtn.querySelector(".promo-toggle-arrow");
+const extraCount=promoToggleBtn.dataset.extraCount || "0";
+const isOpen=extraPromos.classList.toggle("open");
+
+if(arrow){
+arrow.classList.toggle("open", isOpen);
+}
+
+promoToggleBtn.childNodes[0].textContent = isOpen
+? "Скрыть промокоды "
+: `Ещё промокоды (${extraCount}) `;
+return;
+}
 
 const btn=e.target.closest(".toggle-description");
 if(!btn) return;
