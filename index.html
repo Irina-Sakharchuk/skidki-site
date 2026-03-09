@@ -507,7 +507,7 @@ max-width:420px;
 
   <!-- КАТЕГОРИИ -->
   <div id="categories" class="category-grid">
-    <button class="category-btn" data-category="all">Все бренды <span class="count"></span></button>
+    <button class="category-btn" data-category="all">Все категории <span class="count"></span></button>
     <button class="category-btn" data-category="Онлайн-сервисы">Онлайн-сервисы <span class="count"></span></button>
     <button class="category-btn" data-category="Финансовые продукты">Финансовые продукты <span class="count"></span></button>
     <button class="category-btn" data-category="Еда и напитки">Еда и напитки <span class="count"></span></button>
@@ -957,7 +957,7 @@ const mobileBrandSelect = document.getElementById("brand-mobile-select");
 const searchInput = document.getElementById("search");
 const hotToggleBtn = document.getElementById("hot-only-toggle");
 const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
- // активируем кнопку "Все бренды" при загрузке
+ // активируем кнопку "Все категории" при загрузке
 const defaultCategory = document.querySelector('[data-category="all"]');
 if(defaultCategory){
   defaultCategory.classList.add("active");
@@ -1038,7 +1038,7 @@ const category = btn.dataset.category;
 if(!category) return;
 const option = document.createElement("option");
 option.value = category;
-option.textContent = category === "all" ? "Все бренды" : category;
+option.textContent = category === "all" ? "Все категории" : category;
 categoryMobileSelect.appendChild(option);
 });
 categoryMobileSelect.value = activeCategory;
