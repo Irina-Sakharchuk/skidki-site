@@ -488,6 +488,8 @@ const SHEET_URL = "https://script.google.com/macros/s/AKfycbyz7rJv5ruEf8ypxueJWZ
 const GA_MEASUREMENT_ID = "G-M0XNEREVVQ";
 const urlParams = new URLSearchParams(window.location.search);
 const brandParam = (urlParams.get("brand") || "").trim();
+const hotParam = (urlParams.get("hot") || "").trim().toLowerCase();
+const hotParamEnabled = hotParam === "1" || hotParam === "true";
 
 function trackEvent(name, params = {}){
 if(typeof window.gtag !== "function") return;
@@ -866,12 +868,44 @@ const resetBtn = document.getElementById("reset-filters");
 let activeCategory = "all";
 let activeBrand = brandParam || null;
 let hotTimerId = null;
-let hotOnly = false;
+let hotOnly = hotParamEnabled;
 
 function syncHotToggleButton(){
 if(!hotToggleBtn) return;
 hotToggleBtn.classList.toggle("active", hotOnly);
 hotToggleBtn.setAttribute("aria-pressed", hotOnly ? "true" : "false");
+}
+
+function syncFilterParamsInUrl(){
+const nextUrl = new URL(window.location.href);
+
+if(activeBrand){
+nextUrl.searchParams.set("brand", activeBrand);
+}else{
+nextUrl.searchParams.delete("brand");
+}
+
+if(hotOnly){
+nextUrl.searchParams.set("hot", "1");
+}else{
+nextUrl.searchParams.delete("hot");
+}
+
+nextUrl.hash = "";
+const nextPath = nextUrl.pathname + (nextUrl.search ? nextUrl.search : "");
+window.history.replaceState({}, "", nextPath);
+}
+
+function buildBrandHref(brand){
+const nextUrl = new URL(window.location.href);
+nextUrl.searchParams.set("brand", brand);
+if(hotOnly){
+nextUrl.searchParams.set("hot", "1");
+}else{
+nextUrl.searchParams.delete("hot");
+}
+nextUrl.hash = "";
+return nextUrl.pathname + "?" + nextUrl.searchParams.toString();
 }
 
 // ===== БРЕНДЫ =====
@@ -889,8 +923,10 @@ const a=document.createElement("a");
 
 a.className="brand-link";
 a.textContent=brand;
-a.href="?brand="+encodeURIComponent(brand);
+a.href = buildBrandHref(brand);
 a.addEventListener("click", (e)=>{
+const targetHref = buildBrandHref(brand);
+a.href = targetHref;
 const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 if(isModifiedClick){
 trackEvent("brand_click", {
@@ -899,7 +935,7 @@ brand: brand
 return;
 }
 e.preventDefault();
-trackBrandClickAndNavigate(brand, a.href);
+trackBrandClickAndNavigate(brand, targetHref);
 });
 
 brandContainer.appendChild(a);
@@ -928,8 +964,10 @@ brands.forEach(brand=>{
 const a=document.createElement("a");
 a.className = "seo-link-chip";
 
-a.href="?brand="+encodeURIComponent(brand);
+a.href = buildBrandHref(brand);
 a.addEventListener("click", (e)=>{
+const targetHref = buildBrandHref(brand);
+a.href = targetHref;
 const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 if(isModifiedClick){
 trackEvent("brand_click", {
@@ -938,7 +976,7 @@ brand: brand
 return;
 }
 e.preventDefault();
-trackBrandClickAndNavigate(brand, a.href);
+trackBrandClickAndNavigate(brand, targetHref);
 });
  a.textContent="Промокоды " + brand;
 
@@ -1211,6 +1249,7 @@ activeCategory="all";
 activeBrand=null;
 hotOnly=false;
 syncHotToggleButton();
+syncFilterParamsInUrl();
 
 searchInput.value="";
 
@@ -1226,10 +1265,13 @@ if(hotToggleBtn){
 hotToggleBtn.addEventListener("click", ()=>{
 hotOnly = !hotOnly;
 syncHotToggleButton();
+syncFilterParamsInUrl();
 applyFilters();
 });
 syncHotToggleButton();
 }
+
+syncFilterParamsInUrl();
 
 // ===== ПОИСК =====
 
