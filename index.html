@@ -297,6 +297,48 @@ gtag('config', 'G-M0XNEREVVQ');
   color:#fff;
 }
 
+    #brand-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-top:15px;
+}
+
+    #brand-mobile-picker{
+  display:none;
+  max-width:420px;
+  margin:14px auto 0;
+  text-align:left;
+}
+
+    #brand-mobile-picker label{
+  display:block;
+  margin:0 0 6px 2px;
+  font-size:0.85rem;
+  color:#6b7280;
+  font-weight:600;
+}
+
+    #brand-mobile-select{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  font-size:0.95rem;
+  background:#fff;
+  color:#111827;
+}
+
+    @media (max-width: 767px){
+  #brand-container{
+    display:none !important;
+  }
+  #brand-mobile-picker{
+    display:block;
+  }
+}
+
     .brand-link {
   padding:8px 14px;
   border-radius:999px;
@@ -446,7 +488,12 @@ max-width:420px;
 <section style="max-width:1000px;margin:30px auto;padding:0 20px;text-align:center;">
 <h2>Популярные магазины и сервисы</h2>
 
-<div id="brand-container" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px;">
+<div id="brand-container"></div>
+<div id="brand-mobile-picker">
+<label for="brand-mobile-select">Выбери бренд</label>
+<select id="brand-mobile-select">
+<option value="">Все бренды</option>
+</select>
 </div>
  
 </section>
@@ -869,6 +916,7 @@ const container = document.getElementById("promo-container");
 const hotSection = document.getElementById("hot-section");
 const hotContainer = document.getElementById("hot-promo-container");
 const brandContainer = document.getElementById("brand-container");
+const mobileBrandSelect = document.getElementById("brand-mobile-select");
 const searchInput = document.getElementById("search");
 const hotToggleBtn = document.getElementById("hot-only-toggle");
 const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
@@ -928,6 +976,23 @@ const brands = [...new Set(data.map(item => item.brand).filter(Boolean))];
 
 updateBrandPreviewMeta(data, brandParam);
 updateDynamicSchema(data, brandParam);
+
+if(mobileBrandSelect){
+mobileBrandSelect.innerHTML = "";
+const defaultOption = document.createElement("option");
+defaultOption.value = "";
+defaultOption.textContent = "Все бренды";
+mobileBrandSelect.appendChild(defaultOption);
+
+brands.forEach(brand=>{
+const option = document.createElement("option");
+option.value = brand;
+option.textContent = brand;
+mobileBrandSelect.appendChild(option);
+});
+
+mobileBrandSelect.value = activeBrand || "";
+}
 
 if(brandContainer){
 
@@ -1266,6 +1331,9 @@ syncHotToggleButton();
 syncFilterParamsInUrl();
 
 searchInput.value="";
+if(mobileBrandSelect){
+mobileBrandSelect.value = "";
+}
 
 categoryButtons.forEach(b=>b.classList.remove("active"));
 document.querySelector('[data-category="all"]').classList.add("active");
@@ -1286,6 +1354,19 @@ syncHotToggleButton();
 }
 
 syncFilterParamsInUrl();
+
+if(mobileBrandSelect){
+mobileBrandSelect.addEventListener("change", ()=>{
+activeBrand = mobileBrandSelect.value || null;
+if(activeBrand){
+trackEvent("brand_click", {
+brand: activeBrand
+});
+}
+syncFilterParamsInUrl();
+applyFilters();
+});
+}
 
 // ===== ПОИСК =====
 
