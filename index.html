@@ -37,8 +37,43 @@ gtag('config', 'G-M0XNEREVVQ');
       padding: 10px 15px;
     }
 
+    #hot-section{
+      max-width:1000px;
+      margin:24px auto 0;
+      padding:0 15px;
+    }
+
+    .hot-section-header{
+      background:linear-gradient(135deg,#fff1e7 0%,#ffedd5 100%);
+      border:1px solid #fdba74;
+      border-radius:22px;
+      padding:16px 18px;
+      margin-bottom:14px;
+    }
+
+    .hot-section-header h2{
+      margin:0 0 6px;
+      font-size:1.35rem;
+    }
+
+    .hot-section-header p{
+      margin:0;
+      color:#9a3412;
+      font-weight:600;
+    }
+
+    #hot-promo-container{
+      display:grid;
+      gap:12px;
+      justify-content:center;
+      padding:0 0 8px;
+    }
+
     @media (min-width: 768px) {
       #promo-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      #hot-promo-container{
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
@@ -56,6 +91,55 @@ gtag('config', 'G-M0XNEREVVQ');
     .card:hover {
       background-color: #fff7d1;
       border-color: #ffd86b;
+    }
+
+    .hot-card{
+      border:2px solid #fb923c;
+      background:#fff7ed;
+    }
+
+    .hot-card:hover{
+      background:#ffedd5;
+      border-color:#f97316;
+    }
+
+    .hot-card-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .hot-badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:0.78rem;
+      font-weight:700;
+      background:#f97316;
+      color:#fff;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+    }
+
+    .hot-timer{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:0.82rem;
+      font-weight:700;
+      background:#111827;
+      color:#fff;
+    }
+
+    .hot-deadline{
+      margin-bottom:8px;
+      font-size:0.85rem;
+      color:#9a3412;
+      font-weight:600;
     }
 
     .card img {
@@ -297,6 +381,13 @@ max-width:420px;
  
 </section>
 <main>
+  <section id="hot-section" hidden>
+    <div class="hot-section-header">
+      <h2>Горящие акции</h2>
+      <p>Кратковременные предложения с ближайшим окончанием</p>
+    </div>
+    <div id="hot-promo-container"></div>
+  </section>
   <div id="promo-container"></div>
 </main>
 <section style="max-width:900px;margin:40px auto;padding:0 20px;line-height:1.6;">
@@ -420,6 +511,72 @@ function normalizeBrand(value){
 return String(value || "").trim().toLowerCase();
 }
 
+function parseDateForPromo(value){
+if(value === null || value === undefined) return null;
+
+if(value instanceof Date && !Number.isNaN(value.getTime())){
+return value;
+}
+
+const text = String(value).trim();
+if(!text) return null;
+
+const parsed = new Date(text);
+if(!Number.isNaN(parsed.getTime())){
+return parsed;
+}
+
+const dotDate = text.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$/);
+if(dotDate){
+const day = dotDate[1].padStart(2, "0");
+const month = dotDate[2].padStart(2, "0");
+const year = dotDate[3];
+const hour = (dotDate[4] || "23").padStart(2, "0");
+const minute = (dotDate[5] || "59").padStart(2, "0");
+return new Date(`${year}-${month}-${day}T${hour}:${minute}:00+03:00`);
+}
+
+return null;
+}
+
+function isHotFlag(value){
+if(value === true) return true;
+const normalized = String(value || "").trim().toLowerCase();
+return normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "да";
+}
+
+function parseHotPriority(value){
+const number = Number.parseInt(value, 10);
+return Number.isFinite(number) ? number : 9999;
+}
+
+function formatCountdown(diffMs){
+const safeDiff = Math.max(0, diffMs);
+const totalSeconds = Math.floor(safeDiff / 1000);
+const days = Math.floor(totalSeconds / 86400);
+const hours = Math.floor((totalSeconds % 86400) / 3600);
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+const seconds = totalSeconds % 60;
+const hh = String(hours).padStart(2, "0");
+const mm = String(minutes).padStart(2, "0");
+const ss = String(seconds).padStart(2, "0");
+if(days > 0) return `${days}д ${hh}:${mm}:${ss}`;
+return `${hh}:${mm}:${ss}`;
+}
+
+function formatMoscowDate(dateValue){
+if(!dateValue) return "";
+return new Intl.DateTimeFormat("ru-RU", {
+timeZone: "Europe/Moscow",
+day: "2-digit",
+month: "2-digit",
+year: "numeric",
+hour: "2-digit",
+minute: "2-digit",
+hour12: false
+}).format(dateValue);
+}
+
 function cleanText(value, maxLength = 220){
 const text = String(value || "").replace(/\s+/g, " ").trim();
 return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text;
@@ -527,6 +684,11 @@ const offer = {
 "url": offerUrl
 };
 
+const validThroughDate = parseDateForPromo(item.expires_at);
+if(validThroughDate){
+offer.validThrough = validThroughDate.toISOString();
+}
+
 const sellerName = cleanText(item.brand || brand, 80);
 if(sellerName){
 offer.seller = {
@@ -616,6 +778,8 @@ const res = await fetch(SHEET_URL);
 const data = await res.json();
 
 const container = document.getElementById("promo-container");
+const hotSection = document.getElementById("hot-section");
+const hotContainer = document.getElementById("hot-promo-container");
 const brandContainer = document.getElementById("brand-container");
 const searchInput = document.getElementById("search");
 const categoryButtons = document.querySelectorAll(".category-btn[data-category]");
@@ -628,6 +792,7 @@ const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
 let activeBrand = brandParam || null;
+let hotTimerId = null;
 
 // ===== БРЕНДЫ =====
 
@@ -739,9 +904,19 @@ function render(items){
 container.innerHTML="";
 
 items.forEach(item=>{
+container.appendChild(buildPromoCard(item));
+
+});
+
+}
+
+function buildPromoCard(item, options = {}){
+const isHot = options.isHot === true;
+const expiresDate = parseDateForPromo(item.expires_at);
+const expiresMs = expiresDate ? expiresDate.getTime() : 0;
 
 const card=document.createElement("div");
-card.className="card";
+card.className = isHot ? "card hot-card" : "card";
 card.setAttribute("itemscope","");
 card.setAttribute("itemtype","https://schema.org/Offer");
 let promoHTML="";
@@ -787,8 +962,19 @@ promoHTML=`
 
 }
 
+const hotMeta = isHot
+? `
+<div class="hot-card-meta">
+<span class="hot-badge">Горящая акция</span>
+${expiresMs ? `<span class="hot-timer" data-hot-expires-ms="${expiresMs}">До конца: --:--:--</span>` : ""}
+</div>
+${expiresDate ? `<div class="hot-deadline">Действует до ${formatMoscowDate(expiresDate)} (МСК)</div>` : ""}
+`
+: "";
+
 card.innerHTML=`
 ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+${hotMeta}
 <h2 itemprop="name">${item.title}</h2>
 
 ${promoHTML}
@@ -802,10 +988,75 @@ ${promoHTML}
 </div>
 `;
 
-container.appendChild(card);
+return card;
+}
 
+function getHotPromos(items){
+const now = Date.now();
+const hotPrepared = [];
+
+items.forEach(item=>{
+if(!isHotFlag(item.is_hot)) return;
+const expiresDate = parseDateForPromo(item.expires_at);
+if(!expiresDate) return;
+const expiresAtMs = expiresDate.getTime();
+if(expiresAtMs <= now) return;
+hotPrepared.push({
+item: item,
+expiresAtMs: expiresAtMs,
+priority: parseHotPriority(item.hot_priority)
+});
 });
 
+hotPrepared.sort((a, b)=>{
+if(a.priority !== b.priority) return a.priority - b.priority;
+if(a.expiresAtMs !== b.expiresAtMs) return a.expiresAtMs - b.expiresAtMs;
+return String(a.item.title || "").localeCompare(String(b.item.title || ""), "ru");
+});
+
+return hotPrepared.map(entry=>entry.item);
+}
+
+function updateHotCountdowns(){
+const now = Date.now();
+document.querySelectorAll(".hot-timer[data-hot-expires-ms]").forEach(timer=>{
+const expiresAtMs = Number(timer.dataset.hotExpiresMs || "0");
+if(!expiresAtMs){
+timer.textContent = "До конца: --:--:--";
+return;
+}
+
+const diff = expiresAtMs - now;
+if(diff <= 0){
+timer.textContent = "Акция завершилась";
+return;
+}
+
+timer.textContent = "До конца: " + formatCountdown(diff);
+});
+}
+
+function renderHotPromos(items){
+if(!hotSection || !hotContainer) return;
+
+hotContainer.innerHTML = "";
+if(hotTimerId){
+clearInterval(hotTimerId);
+hotTimerId = null;
+}
+
+if(!items.length){
+hotSection.hidden = true;
+return;
+}
+
+hotSection.hidden = false;
+items.forEach(item=>{
+hotContainer.appendChild(buildPromoCard(item, { isHot: true }));
+});
+
+updateHotCountdowns();
+hotTimerId = window.setInterval(updateHotCountdowns, 1000);
 }
 
 
@@ -831,6 +1082,10 @@ return matchSearch && matchCategory && matchBrand;
 
 });
 
+const hotPromos = getHotPromos(filtered);
+const hotPromoSet = new Set(hotPromos);
+const regularPromos = filtered.filter(item=>!hotPromoSet.has(item));
+
 if(resetBtn){
 if(activeCategory !== "all" || activeBrand !== null || searchInput.value !== ""){
 resetBtn.style.display = "inline-block";
@@ -839,7 +1094,8 @@ resetBtn.style.display = "none";
 }
 }
 
-render(filtered);
+renderHotPromos(hotPromos);
+render(regularPromos);
 
 }
 
