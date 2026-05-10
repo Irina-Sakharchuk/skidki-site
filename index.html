@@ -81,8 +81,8 @@ gtag('config', 'G-M0XNEREVVQ');
     .hero-content {
       justify-self: start;
       max-width: 640px;
-      padding-top: 46px;
-      margin-left: -26px;
+      padding-top: 102px;
+      margin-left: -68px;
       text-align: left;
     }
 
@@ -105,7 +105,7 @@ gtag('config', 'G-M0XNEREVVQ');
 
     .hero-subtext {
       max-width: 560px;
-      margin: 8px 0 12px;
+      margin: 8px 0 2px;
       color: #443e37;
       font-size: 0.93rem;
     }
@@ -356,6 +356,8 @@ gtag('config', 'G-M0XNEREVVQ');
       min-height: 260px;
       gap: 8px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: visible;
     }
 
     .card:hover {
@@ -379,13 +381,18 @@ gtag('config', 'G-M0XNEREVVQ');
     .card-title {
       margin: 0;
       font-size: 1rem;
-      line-height: 1.2;
-      min-height: 48px;
+      line-height: 1.3;
+      height: calc(1.3em * 2);
+      min-height: calc(1.3em * 2);
+      max-height: calc(1.3em * 2);
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       line-clamp: 2;
       overflow: hidden;
+      text-overflow: ellipsis;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .hot-card-meta {
@@ -430,14 +437,54 @@ gtag('config', 'G-M0XNEREVVQ');
       border: 1px solid #f2e4cc;
       border-radius: 14px;
       padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .promo-code {
       font-size: 0.84rem;
       font-weight: 800;
-      margin-bottom: 6px;
+      margin: 0;
       color: #4f4539;
       word-break: break-word;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+      line-height: 1.35;
+      min-height: calc(1.35em * 2);
+      max-height: calc(1.35em * 2);
+      padding-right: 42px;
+    }
+
+    .card-corner-mascot {
+      position: absolute;
+      right: -2px;
+      bottom: -18px;
+      width: 78px;
+      height: auto;
+      max-height: 62px;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 3;
+      border: none;
+      background: none;
+      box-shadow: none;
+      filter: none;
+      outline: none;
+      mix-blend-mode: normal;
+    }
+
+    @media (max-width: 767px) {
+      .card-corner-mascot {
+        width: 60px;
+        max-height: 48px;
+        right: -4px;
+        bottom: -14px;
+      }
     }
 
     .big-promo-btn {
@@ -616,7 +663,12 @@ gtag('config', 'G-M0XNEREVVQ');
 
       .card-title {
         font-size: 0.9rem;
-        min-height: 42px;
+        line-height: 1.28;
+        height: calc(1.28em * 2);
+        min-height: calc(1.28em * 2);
+        max-height: calc(1.28em * 2);
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
       }
 
       .big-promo-btn {
@@ -653,6 +705,7 @@ gtag('config', 'G-M0XNEREVVQ');
 
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <script type="application/ld+json">
@@ -741,20 +794,20 @@ gtag('config', 'G-M0XNEREVVQ');
 <h2>Актуальные промокоды и скидки интернет-магазинов</h2>
 
 <p>
-На нашем сайте собраны лучшие промокоды, скидки и акции популярных интернет-магазинов России.
-Мы ежедневно обновляем предложения, чтобы вы могли экономить на покупках одежды, техники,
-продуктов, путешествий и онлайн-сервисов.
+На нашем сайте Скидконот собрал самые выгодные промокоды, скидки и акции популярных интернет-магазинов России.
+Наш хитрый енот каждый день ищет свежие предложения, чтобы вы могли экономить на одежде, технике,
+продуктах, путешествиях и онлайн-сервисах.
 </p>
 
 <p>
-Здесь вы найдете актуальные купоны и специальные предложения от известных брендов
-и маркетплейсов. Используйте промокоды при оформлении заказа и получайте дополнительные
-скидки на покупки.
+Здесь вы найдете актуальные купоны и специальные предложения от известных брендов, маркетплейсов
+и сервисов. Просто используйте промокод при оформлении заказа — и забирайте скидки, бонусы
+и подарки к покупкам.
 </p>
 
 <p>
-Мы стараемся публиковать только проверенные акции, чтобы вы могли быстро найти
-самые выгодные предложения и не переплачивать.
+Скидконот публикует только проверенные акции, чтобы вы быстро находили лучшие предложения
+и не тратили лишнего. Экономьте с умом вместе с нашим енотом!
 </p>
 </section>
 <script>
@@ -1159,8 +1212,7 @@ if(defaultCategory){
 const resetBtn = document.getElementById("reset-filters");
 
 let activeCategory = "all";
-let activeBrand = brandParam || null;
-let hotTimerId = null;
+let activeBrand = brandParam || null;let hotTimerId = null;
 let hotOnly = hotParamEnabled;
 
 function syncHotToggleButton(){
@@ -1437,6 +1489,7 @@ ${promoHTML}
 </button>
 <div class="description-text">${formatDescription(item.description)}</div>
 </div>
+<img class="card-corner-mascot" src="raccoon-head-transparent.png" alt="">
 `;
 
 return card;
