@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Находки Скидконота — проверенные скидки на товары</title>
+<meta name="description" content="Личная подборка Скидконота: товары, которые он проверил и считает стоящими. Цены, скидки и ссылки на маркетплейсы.">
+<link rel="canonical" href="https://skidki-promo.netlify.app/nahodki.html">
+
+<meta property="og:title" content="Находки Скидконота">
+<meta property="og:description" content="Проверенные находки: цена, скидка и ссылка на товар.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://skidki-promo.netlify.app/nahodki.html">
+<meta property="og:image" content="https://skidki-promo.netlify.app/skidkonot-hero.png">
+<meta property="og:site_name" content="Промокоды и скидки">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0XNEREVVQ"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M0XNEREVVQ');
+</script>
+
+<style>
+  :root{
+    --brand-red:#b2363e;
+    --brand-red-mid:#982a33;
+    --brand-red-dark:#7b1e27;
+    --brand-cream:#f9f3e8;
+    --brand-yellow:#ffcc2e;
+    --card-border:#e8dfd0;
+    --text-main:#151515;
+    --shadow-soft:0 10px 28px rgba(24,20,16,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#f7f2e7;
+    color:var(--text-main);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  }
+  a{color:inherit}
+
+  .topbar{
+    width:min(1120px,calc(100% - 28px));
+    margin:16px auto 0;
+    background:var(--brand-cream);
+    border:1px solid #eee2cf;
+    border-radius:22px;
+    box-shadow:var(--shadow-soft);
+    padding:12px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .logo{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+  }
+  .logo-badge{
+    background:linear-gradient(180deg,var(--brand-red) 0%,var(--brand-red-dark) 100%);
+    color:#fff;
+    font-weight:900;
+    font-size:.9rem;
+    letter-spacing:.08em;
+    padding:9px 16px;
+    border-radius:999px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .back{
+    font-weight:700;
+    font-size:.88rem;
+    text-decoration:none;
+    color:#7b3521;
+  }
+  .back:hover{text-decoration:underline}
+
+  .hero{
+    width:min(1120px,calc(100% - 28px));
+    margin:14px auto 0;
+    background:var(--brand-cream);
+    border:1px solid #eee2cf;
+    border-radius:28px;
+    box-shadow:var(--shadow-soft);
+    padding:26px 24px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 300px;
+    gap:16px;
+    align-items:center;
+  }
+  .hero h1{
+    margin:0 0 8px;
+    font-size:clamp(1.6rem,2.8vw,2.4rem);
+    line-height:1.1;
+    font-weight:900;
+    letter-spacing:-.02em;
+  }
+  .hero p{
+    margin:0;
+    max-width:560px;
+    color:#443e37;
+    font-size:1rem;
+    line-height:1.45;
+  }
+  .hero-count{
+    display:inline-block;
+    margin-top:14px;
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:999px;
+    padding:7px 14px;
+    font-size:.85rem;
+    font-weight:800;
+    color:#7b3521;
+  }
+  .hero-mascot{
+    justify-self:center;
+    width:300px;
+    max-width:100%;
+    mix-blend-mode:multiply;
+  }
+
+  .grid-wrap{
+    width:min(1120px,calc(100% - 28px));
+    margin:14px auto 0;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,280px));
+    justify-content:center;
+    gap:16px;
+  }
+  .card{
+    position:relative;
+    background:#fff;
+    border:1px solid var(--card-border);
+    border-radius:22px;
+    box-shadow:0 8px 18px rgba(31,24,14,.08);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 26px rgba(31,24,14,.13);
+  }
+  .photo{
+    position:relative;
+    background:#fff;
+    aspect-ratio:1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px;
+  }
+  .photo img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+  }
+  .badge{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:linear-gradient(180deg,var(--brand-red) 0%,var(--brand-red-dark) 100%);
+    color:#fff;
+    font-size:.85rem;
+    font-weight:900;
+    border-radius:999px;
+    padding:5px 11px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .body{
+    padding:13px 15px 15px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+  }
+  .title{
+    margin:0;
+    font-size:1rem;
+    line-height:1.3;
+    font-weight:800;
+    min-height:2.6em;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    line-clamp:2;
+    overflow:hidden;
+  }
+  .sub{
+    margin:0;
+    font-size:.85rem;
+    color:#6b6258;
+  }
+  .prices{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  }
+  .old{
+    font-size:.9rem;
+    color:#9a9084;
+    text-decoration:line-through;
+  }
+  .new{
+    font-size:1.55rem;
+    font-weight:900;
+    color:var(--brand-red);
+    letter-spacing:-.01em;
+  }
+  .note{
+    margin:0;
+    font-size:.78rem;
+    color:#8a7f72;
+  }
+  .btn{
+    display:block;
+    margin-top:auto;
+    padding:11px 10px;
+    text-align:center;
+    text-decoration:none;
+    border-radius:12px;
+    font-size:.92rem;
+    font-weight:800;
+    color:#fff;
+    background:linear-gradient(180deg,var(--brand-red) 0%,var(--brand-red-mid) 55%,var(--brand-red-dark) 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16);
+    transition:filter .2s ease;
+  }
+  .note{margin-bottom:6px}
+  .btn:hover{filter:brightness(1.08)}
+
+  .empty{
+    text-align:center;
+    padding:40px 20px;
+    color:#7b6f62;
+  }
+
+  .foot{
+    width:min(1120px,calc(100% - 28px));
+    margin:18px auto 34px;
+    text-align:center;
+    font-size:.8rem;
+    color:#8a7f72;
+    line-height:1.6;
+  }
+  .foot a{font-weight:700}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;padding:20px 18px;text-align:center}
+    .hero p{margin:0 auto}
+    .hero-mascot{width:200px;order:-1}
+  }
+  @media (max-width:767px){
+    .topbar,.hero,.grid-wrap,.foot{width:calc(100% - 16px)}
+    .topbar{border-radius:18px;padding:10px 12px}
+    .hero{border-radius:20px}
+    .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .body{padding:9px 10px 11px}
+    .title{font-size:.9rem}
+    .new{font-size:1.2rem}
+    .btn{font-size:.82rem;padding:9px 6px}
+    .note{font-size:.72rem}
+    .sub{font-size:.78rem}
+    .logo-badge{font-size:.78rem;padding:7px 12px}
+    .back{font-size:.78rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="/">
+    <span class="logo-badge">СКИДКОНОТ</span>
+  </a>
+  <a class="back" href="/">← Промокоды и скидки</a>
+</div>
+
+<header class="hero">
+  <div>
+    <h1>Находки Скидконота</h1>
+    <p>Товары, которые я проверил сам: смотрю цену, историю и отзывы. Если скидка нарисована — так и пишу. Обновляю после каждого поста.</p>
+    <span class="hero-count" id="count">Сейчас в подборке: 0</span>
+  </div>
+  <img class="hero-mascot" src="skidkonot-hero.png" alt="Енот Скидконот">
+</header>
+
+<main class="grid-wrap">
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>Пока пусто. Скоро здесь появятся находки.</p>
+</main>
+
+<footer class="foot">
+  <p>Цены — на дату публикации. Наличие и итоговую стоимость проверяйте на странице магазина. Материал содержит рекламные ссылки.</p>
+  <p><a href="/">← Все промокоды и скидки</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   ОТКУДА БЕРУТСЯ ТОВАРЫ
+
+   Режим 1 (сейчас): массив NAHODKI ниже — товары правятся в коде.
+   Режим 2 (таблица): вставьте в SHEET_URL ссылку на веб-приложение
+   Google Apps Script — и страница будет брать товары из Google Таблицы.
+   Если таблица не ответила, страница покажет товары из NAHODKI.
+   ============================================================ */
+var SHEET_URL = ""; // например: "https://script.google.com/macros/s/AKfy.../exec"
+
+var NAHODKI = [
+  {
+    title: "Мини-принтер карманный",
+    subtitle: "фото, стикеры, этикетки",
+    image: "https://basket-14.wbbasket.ru/vol2142/part214220/214220477/images/big/1.webp",
+    price: "1 618",
+    oldPrice: "5 000",
+    discount: "−68%",
+    note: "Цена на 6 ноября · рейтинг 5,0 · 82 оценки",
+    url: "https://www.wildberries.ru/catalog/214220477/detail.aspx"
+  },
+  {
+    title: "Термокружка с кнопкой",
+    subtitle: "370 мл · бежевый · нержавейка",
+    image: "https://basket-12.wbbasket.ru/vol1772/part177230/177230366/images/big/1.webp",
+    price: "972",
+    oldPrice: "5 092",
+    discount: "−81%",
+    note: "Цена на 5 ноября · рейтинг 4,9 · 913 оценок",
+    url: "https://www.wildberries.ru/catalog/177230366/detail.aspx"
+  }
+];
+/* ======================= конец списка ======================= */
+
+(function () {
+  var grid = document.getElementById("grid");
+  var empty = document.getElementById("empty");
+  var count = document.getElementById("count");
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function str(v) {
+    return v == null ? "" : String(v).trim();
+  }
+
+  function truthy(v) {
+    var s = str(v).toLowerCase();
+    return s === "true" || s === "1" || s === "да" || s === "yes";
+  }
+
+  function normalize(row) {
+    return {
+      title: str(row.title),
+      subtitle: str(row.subtitle),
+      image: str(row.image),
+      price: str(row.price),
+      oldPrice: str(row.oldPrice),
+      discount: str(row.discount),
+      note: str(row.note),
+      url: str(row.url),
+      hidden: truthy(row.hidden)
+    };
+  }
+
+  function toNumber(v) {
+    var n = parseFloat(str(v).replace(/\s/g, "").replace(",", "."));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function render(list) {
+    grid.innerHTML = "";
+    empty.hidden = true;
+
+    var items = list.filter(function (x) { return x && x.title && !x.hidden; });
+    count.textContent = "Сейчас в подборке: " + items.length;
+
+    if (!items.length) {
+      empty.hidden = false;
+      return;
+    }
+
+    items.forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML =
+        '<div class="photo">' +
+          '<img src="' + esc(item.image) + '" alt="' + esc(item.title) + '" loading="lazy">' +
+          (item.discount ? '<span class="badge">' + esc(item.discount) + '</span>' : '') +
+        '</div>' +
+        '<div class="body">' +
+          '<h2 class="title">' + esc(item.title) + '</h2>' +
+          (item.subtitle ? '<p class="sub">' + esc(item.subtitle) + '</p>' : '') +
+          '<div class="prices">' +
+            (item.oldPrice ? '<span class="old">' + esc(item.oldPrice) + ' ₽</span>' : '') +
+            '<span class="new">' + esc(item.price) + ' ₽</span>' +
+          '</div>' +
+          (item.note ? '<p class="note">' + esc(item.note) + '</p>' : '') +
+          '<a class="btn" href="' + esc(item.url) + '" target="_blank" rel="noopener">Забрать</a>' +
+        '</div>';
+      grid.appendChild(card);
+
+      card.querySelector(".btn").addEventListener("click", function () {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "finder_click", {
+            send_to: "G-M0XNEREVVQ",
+            item_name: item.title,
+            value: toNumber(item.price),
+            currency: "RUB"
+          });
+        }
+      });
+    });
+  }
+
+  function renderFallback() {
+    render(NAHODKI.map(normalize));
+  }
+
+  function load() {
+    if (!SHEET_URL) {
+      renderFallback();
+      return;
+    }
+
+    var finished = false;
+    var timer = setTimeout(function () {
+      if (finished) return;
+      finished = true;
+      renderFallback();
+    }, 6000);
+
+    fetch(SHEET_URL, { cache: "no-store" })
+      .then(function (res) { return res.json(); })
+      .then(function (rows) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        if (!Array.isArray(rows) || !rows.length) {
+          renderFallback();
+          return;
+        }
+        render(rows.map(normalize));
+      })
+      .catch(function () {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        renderFallback();
+      });
+  }
+
+  load();
+})();
+</script>
+
+</body>
+</html>
