@@ -314,12 +314,16 @@ gtag('config', 'G-M0XNEREVVQ');
 /* ============================================================
    ОТКУДА БЕРУТСЯ ТОВАРЫ
 
-   Режим 1 (сейчас): массив NAHODKI ниже — товары правятся в коде.
-   Режим 2 (таблица): вставьте в SHEET_URL ссылку на веб-приложение
-   Google Apps Script — и страница будет брать товары из Google Таблицы.
-   Если таблица не ответила, страница покажет товары из NAHODKI.
+   Режим 1: массив NAHODKI ниже — товары правятся в коде.
+   Режим 2: вставьте в SHEET_URL обычную ссылку на Google Таблицу —
+   страницу больше не нужно пересобирать и деплоить.
+   Подходит ссылка вида
+   https://docs.google.com/spreadsheets/d/xxxx/edit#gid=0
+   Таблица должна быть открыта по ссылке: «Все, у кого есть ссылка — Читатель».
+
+   Если таблица не ответила за 6 секунд, страница покажет товары из NAHODKI.
    ============================================================ */
-var SHEET_URL = ""; // например: "https://script.google.com/macros/s/AKfy.../exec"
+var SHEET_URL = ""; // ссылка на Google Таблицу
 
 var NAHODKI = [
   {
@@ -435,6 +439,41 @@ var NAHODKI = [
     render(NAHODKI.map(normalize));
   }
 
+  /* --- Google Таблица без Apps Script (JSONP, без CORS) --- */
+
+  function isGoogleSheet(url) {
+    return /docs\.google\.com\/spreadsheets\//.test(url);
+  }
+
+  function gvizUrl(base, cb) {
+    var m = base.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+    if (!m) return null;
+    var gid = (base.match(/[#&?]gid=([0-9]+)/) || [])[1];
+    var url = "https://docs.google.com/spreadsheets/d/" + m[1] +
+      "/gviz/tq?tqx=responseHandler:" + cb + "&headers=1";
+    if (gid) {
+      url += "&gid=" + gid;
+    } else {
+      url += "&sheet=" + encodeURIComponent("Находки");
+    }
+    return url;
+  }
+
+  function gvizRows(data) {
+    if (!data || !data.table) return [];
+    var cols = (data.table.cols || []).map(function (c) {
+      return str(c.label || c.id || "");
+    });
+    return (data.table.rows || []).map(function (r) {
+      var row = {};
+      (r.c || []).forEach(function (cell, i) {
+        var v = cell ? cell.v : "";
+        row[cols[i]] = v == null ? "" : v;
+      });
+      return row;
+    });
+  }
+
   function load() {
     if (!SHEET_URL) {
       renderFallback();
@@ -442,30 +481,44 @@ var NAHODKI = [
     }
 
     var finished = false;
-    var timer = setTimeout(function () {
+
+    function done(rows) {
       if (finished) return;
       finished = true;
-      renderFallback();
-    }, 6000);
+      clearTimeout(timer);
+      if (Array.isArray(rows) && rows.length) {
+        render(rows.map(normalize));
+      } else {
+        renderFallback();
+      }
+    }
+
+    var timer = setTimeout(function () { done(null); }, 6000);
+
+    if (isGoogleSheet(SHEET_URL)) {
+      var cb = "__sheet" + Math.random().toString(36).slice(2);
+      var url = gvizUrl(SHEET_URL, cb);
+      if (!url) { done(null); return; }
+
+      var script = document.createElement("script");
+      function cleanup() {
+        try { delete window[cb]; } catch (e) { window[cb] = null; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[cb] = function (data) {
+        cleanup();
+        done(gvizRows(data));
+      };
+      script.onerror = function () { cleanup(); done(null); };
+      script.src = url;
+      document.head.appendChild(script);
+      return;
+    }
 
     fetch(SHEET_URL, { cache: "no-store" })
       .then(function (res) { return res.json(); })
-      .then(function (rows) {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timer);
-        if (!Array.isArray(rows) || !rows.length) {
-          renderFallback();
-          return;
-        }
-        render(rows.map(normalize));
-      })
-      .catch(function () {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timer);
-        renderFallback();
-      });
+      .then(done)
+      .catch(function () { done(null); });
   }
 
   load();

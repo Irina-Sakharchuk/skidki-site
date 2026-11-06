@@ -876,7 +876,7 @@ const GA_MEASUREMENT_ID = "G-M0XNEREVVQ";
 const urlParams = new URLSearchParams(window.location.search);
 const brandParam = (urlParams.get("brand") || "").trim();
 const hotParam = (urlParams.get("hot") || "").trim().toLowerCase();
-const hotParamEnabled = hotParam ? (hotParam === "1" || hotParam === "true") : true;
+const hotParamEnabled = hotParam ? (hotParam === "1" || hotParam === "true") : false;
 
 function trackEvent(name, params = {}){
 if(typeof window.gtag !== "function") return;
@@ -1467,6 +1467,39 @@ container.appendChild(buildPromoCard(item));
 
 }
 
+function urlDomain(url){
+try{
+const host = new URL(String(url || "")).hostname.toLowerCase();
+return host.replace(/^www\./, "");
+}catch(e){
+return "";
+}
+}
+
+function letterLogo(name){
+const text = String(name || "?").trim();
+const letter = (text.charAt(0) || "?").toUpperCase().replace(/[<>&"']/g, "");
+const palette = ["#b2363e","#2a9d8f","#d08a2c","#5566b8","#7b4fa0","#b45f3f"];
+let hash = 0;
+for(let i = 0; i < text.length; i++){
+hash = (hash + text.charCodeAt(i)) % palette.length;
+}
+const bg = palette[hash];
+const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="128" height="128" rx="24" fill="' + bg + '"/><text x="64" y="66" font-family="Arial,Helvetica,sans-serif" font-size="62" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">' + letter + '</text></svg>';
+return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+function promoLogo(item){
+if(item.image){
+return { src: String(item.image), auto: false };
+}
+const domain = urlDomain(item.link1);
+if(!domain){
+return { src: letterLogo(item.brand || item.title), auto: true };
+}
+return { src: "https://www.google.com/s2/favicons?domain=" + encodeURIComponent(domain) + "&sz=128", auto: true };
+}
+
 function buildPromoCard(item, options = {}){
 const isHot = options.isHot === true;
 const expiresDate = parseDateForPromo(item.expires_at);
@@ -1534,8 +1567,11 @@ ${expiresDate ? `<div class="hot-deadline">Действует до ${formatMosco
 `
 : "";
 
+const logo = promoLogo(item);
+const logoFallback = escapeHtmlAttr(letterLogo(item.brand || item.title));
+
 card.innerHTML=`
-${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+<img class="card-logo" src="${escapeHtmlAttr(logo.src)}" alt="${escapeHtmlAttr(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='${logoFallback}'">
 ${hotMeta}
 <h2 class="card-title" itemprop="name" title="${escapeHtmlAttr(item.title)}">${item.title}</h2>
 
